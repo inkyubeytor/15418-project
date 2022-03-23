@@ -9,43 +9,50 @@ The algorithm at its core is an adapation of a weighted tree partitioning algori
 
 Define a LU partition of a tree to be one with at most *p* components where each component is connected and meets the weight bound, and a near-extendable partition to be one that meets all the requirements of a LU partition with the exception of the component containing the root, whose weight can be less than the lower bound. To compute the near-extendable partitions of a subtree at vertex *v*, we are given the set of near-extendable partitions for each child *v<sub>i</sub>* of *v*, where the children are arbitrarily numbered. Consider the tree with root *v* and including all subtrees at children numbered up to and including *i* and its "predecessor tree", the same tree but up to child *i*-1. The near-extendable partitions of this tree can be computed by merging near-extendable partitions of the predecessor tree and near-extendable partitions of the subtree at *v<sub>i</sub>* such that the total number of components is at most *p*. These partitions can be cased on whether the component containing *v<sub>i</sub>* is merged with the component containing *v*. If yes, the merged component must meet the upper bound; otherwise, the component containing *v<sub>i</sub>* must meet both the lower and upper bounds.
 
+TODO: parallelism within levels, parallelism across kprime
+
+TODO: not all spanning trees have valid partitions, test multiple trees?
+
 ## Pseudocode
 
 ```
 /* G: graph
  * p: number of partitions
- * l, u: lower, upper bound */
+ * l, u: lower, upper bound
+ * num_iters: number of iterations */
 
-T = minimum_spanning_tree(G)  # can be replaced with any algorithm that returns a spanning tree
-for v in postorder_traverse(T):
-    parts_0 = {k: {} for k in range(2, p + 1)} + {1: {v.weight: {(None, 0)}}}  # base case
-    v.table = [parts_0]  # list of dictionaries where keys correspond to number of components and values are sets of tuples describing partitions (weight of root component, number of components)
-    for vi in v.children:
-        parts_dict = {}
-        for k in range(1, p + 1):  # loop through potential number of components
-            z_dict = {}
-            # case: merge root components
-            for k_prime in range(1, k + 1):  # loop through ways to divide number of components among two partitions
-                left = v.table[-1][k_prime]  # near-extendable partitions of v and children 1 to i-1
-                right = vi.table[-1][k - k_prime + 1]  # near-extendable partitions of child i
-                for a in left:
+for iter in num_iters:
+    T = spanning_tree(G)  # any algorithm that returns a spanning tree (should return a different spanning tree in each iteration)
+    for v in postorder_traverse(T):
+        parts_0 = {k: {} for k in range(2, p + 1)} + {1: {v.weight: {(None, 0)}}}  # base case
+        v.table = [parts_0]  # list of dictionaries where keys correspond to number of components and values are sets of tuples describing partitions (weight of root component, number of components)
+        for vi in v.children:
+            parts_dict = {}
+            for k in range(1, p + 1):  # loop through potential number of components
+                z_dict = {}
+                # case: merge root components
+                for k_prime in range(1, k + 1):  # loop through ways to divide number of components among two partitions
+                    left = v.table[-1][k_prime]  # near-extendable partitions of v and children 1 to i-1
+                    right = vi.table[-1][k - k_prime + 1]  # near-extendable partitions of child i
+                    for a in left:
+                        for b in right:
+                            z_dict[a + b].add((a, k_prime))  # merge partitions, merge root components
+                # case: do not merge root components
+                for k_prime in range(1, k):
+                    left = v.table[-1][k_prime]  # near-extendable partitions of v and children 1 to i-1
+                    right = vi.table[-1][k - k_prime]  # near-extendable partitions of child i
                     for b in right:
-                        z_dict[a + b].add((a, k_prime))  # merge partitions, merge root components
-            # case: do not merge root components
-            for k_prime in range(1, k):
-                left = v.table[-1][k_prime]  # near-extendable partitions of v and children 1 to i-1
-                right = vi.table[-1][k - k_prime]  # near-extendable partitions of child i
-                for b in right:
-                    if l <= b <= u:  # only select valid LU partitions
-                        for a in left:
-                            z_dict[a].add((None, k_prime))  # merge partitions, new root component is left root component
-            parts_dict[k] = z_dict
-        v.table.append(parts_dict)
+                        if l <= b <= u:  # only select valid LU partitions
+                            for a in left:
+                                z_dict[a].add((None, k_prime))  # merge partitions, new root component is left root component
+                parts_dict[k] = z_dict
+            v.table.append(parts_dict)
 
-# find valid LU partition of root
-for a in T.root.table[-1]["parts"][p]:
-    if l <= a <= u:
-        return generate_assignment(a, T)
+    # find valid LU partition of root
+    for a in T.root.table[-1]["parts"][p]:
+        if l <= a <= u:
+            return generate_assignment(a, T)
+
 return None  # no valid partition found
 ```
 
@@ -105,4 +112,3 @@ Week of 2022-04-10 (Checkpoint): Experiment with different methods of work divis
 Week of 2022-04-17: Implement parallel minimum spanning tree computations and experiment with choosing spanning trees that make valid partitions more likely to exist.
 
 Week of 2022-04-24: Implement parallelism by attempting to compute the problem for sub-partitions of the graph and combining them.
-
