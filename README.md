@@ -98,7 +98,7 @@ We plan to deploy our solution on multicore CPUs (our computers, the GHC machine
 
 Week of 2022-03-27: Create efficient sequential implementation. If in C++, prioritize the naive algorithm. If in Python, consider implementing the faster "interval set" algorithm as well.
 
-Week of 2022-04-03: Implement parallelism within tree partition computation (across nodes in the same level).
+Week of 2022-04-03: Implement parallelism within tree partition computation (across nodes in the same level in the postorder traversal of a tree). If viable, implement parallelism over the "k_prime" innermost loops (likely too high contention for data structures to achieve performance improvements, but worth testing).
 
 Week of 2022-04-10 (Checkpoint): Experiment with different methods of work division for parallelism within the partition computation.
 
