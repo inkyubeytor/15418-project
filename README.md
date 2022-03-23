@@ -9,8 +9,6 @@ The algorithm at its core is an adapation of a weighted tree partitioning algori
 
 Define a LU partition of a tree to be one with at most *p* components where each component is connected and meets the weight bound, and a near-extendable partition to be one that meets all the requirements of a LU partition with the exception of the component containing the root, whose weight can be less than the lower bound. To compute the near-extendable partitions of a subtree at vertex *v*, we are given the set of near-extendable partitions for each child *v<sub>i</sub>* of *v*, where the children are arbitrarily numbered. Consider the tree with root *v* and including all subtrees at children numbered up to and including *i* and its "predecessor tree", the same tree but up to child *i*-1. The near-extendable partitions of this tree can be computed by merging near-extendable partitions of the predecessor tree and near-extendable partitions of the subtree at *v<sub>i</sub>* such that the total number of components is at most *p*. These partitions can be cased on whether the component containing *v<sub>i</sub>* is merged with the component containing *v*. If yes, the merged component must meet the upper bound; otherwise, the component containing *v<sub>i</sub>* must meet both the lower and upper bounds.
 
-TODO: parallelism potential? basically talk about parallelism within levels
-
 ## Pseudocode
 
 ```
@@ -96,7 +94,7 @@ Our first choice of language would be CPython, so that we could work off of our 
 We plan to deploy our solution on multicore CPUs (our computers, the GHC machines, and PSC).
 
 
-# Schedule - TODO: more details on weeks 2 and 3
+# Schedule
 
 Week of 2022-03-27: Create efficient sequential implementation. If in C++, prioritize the naive algorithm. If in Python, consider implementing the faster "interval set" algorithm as well.
 
