@@ -37,22 +37,18 @@ In order to test our parallel solution, we would require at a minimum access to 
 
 # Goals and Deliverables
 
-## 75% Goals - TODO
-something parallel that has existent speedup tm??
+## 75% Goals
+ * Achieve increasing speedups with up to 8 cores using parallelism within the computation for a given tree. We believe this is possible because for sufficiently different lower and upper cost bounds, there are many computations involving mapping functions over sequences with far more than 8 elements.
+ * Implement the "trivial" parallel solution of having each core compute the problem for a different spanning tree of the same graph.
+ * Speedup tables and plots for all parallel solutions tried.
 
-## 100% Goals - TODO
-have a parallel implementation that scales to at least 4/8 cores?
+## 100% Goals
+ * Develop a visual demonstration for how graphs are being partitioned by the algorithm (may be more applicable to some versions of parallelism than others).
+ * Combine orthogonal parallelism strategies to increase speedup beyond each method's speedup alone.
 
-"justification as to why you can achieve it"
-
-demo: speedup graphs? demonstrate on real map(s)?
-
-## 125% Goals - TODO
-scale to even more cores (like PSC level number of cores)
-
-analysis of different spanning tree selections on performance (map quality) and runtime (focus on runtime)
-
-make it into a package? lol
+## 125% Goals
+ * Achieve increasing speedups on up to 64 cores (using the PSC machines).
+ * Comparative analysis of different parallel spanning tree algorithms and how choices of spanning tree can lead to fewer partitioning attempts.
 
 # Platform Choice
 
