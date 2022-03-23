@@ -21,10 +21,14 @@ The memory accesses of the program have potentially high locality. Because the a
 
 The amount of communication (both the scale and frequency) depend on the division of work. If work is divided along the innermost axis of parallelism (the computation for how to add the next node to a partition), there may be very high-frequency, fine-grained communication. If we instead partition work by dividing the graph to be partitioned, the communication will consist of aggregating the final sub-partitions, a much larger message size at a much smaller frequency.
 
-## Constraints - TODO
+## Constraints
 What are the properties of the system that make mapping the workload to it challenging?
 
-One constraint we have is in the system's representation of the graph. If we use a system with a 
+One constraint we have is in the system's representation of the graph. If we use a standard graph representation such as an adjacency list, the tree we compute may have many nodes per cache line in memory. This could cause issues via false sharing unless we artificially inflate the size of our graph representation.
+
+Another constraint is in the size of the working set. For sufficiently high differences between lower and upper cost bounds in the standard, "naive" algorithm, we may end up maintaining sets that grow beyond the size of at least L1 and L2 cache levels on a given core. Regardless of the strategy for computation that we use, this could cause L2 capacity misses that reduce the speed of the algorithm.
+
+A third constraint relates to the potential for divergent execution. Even though a multicore CPU is much better at performing divergent operations in parallel, the pieces of work may become differently sized enough that we require a work queue implementation. Such a queue would likely have to store partial graph partitions in order to provide the necessary contexts for pending pieces of work in the queue. In this case, it is possible that the communication of partial partitions via a work queue could be prohibitively expensive in the size of the communication involved, forcing us to use larger granularities of work with potentially uneven work distributions.
 
 # Resources
 The paper from which the original algorithms come from is https://link.springer.com/article/10.1007/s00453-010-9485-y
