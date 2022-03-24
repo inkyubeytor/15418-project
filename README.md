@@ -5,13 +5,13 @@ Team Members: Abhishek Vijayakumar (abhishev@andrew.cmu.edu), Anna Cai (annacai@
 We are going to implement a cost-bounded partitioning algorithm for weighted graphs and optimize it for parallelism across multicore CPUs. Given a graph with vertex weights, this algorithm creates a fixed number of graph partitions such that the sum of costs in each partition falls within a set interval. This algorithm can be used in the automatic division of precincts into voting districts, and is thus highly relevant to district map analysis.
 
 # Background
-The algorithm at its core is an adapation of a weighted tree partitioning algorithm by Ito et al. (linked below) to general graphs through the initial computation of a spanning tree of the given graph (minimum or otherwise). The algorithm by Ito et al. to compute a partition of tree *T* with *p* connected components of weight bounded by (*l*, *u*) is as follows:
+The algorithm at its core is an adapation of a weighted tree partitioning algorithm by Ito et al. (linked below) to general graphs through the initial computation of a spanning tree of the given graph (minimum or otherwise). The algorithm by Ito et al. to compute a partition of tree *T* with *p* connected components of weight bounded by (*l*, *u*) is as follows (pseudocode in section below):
 
 Define a LU partition of a tree to be one with at most *p* components where each component is connected and meets the weight bound, and a near-extendable partition to be one that meets all the requirements of a LU partition with the exception of the component containing the root, whose weight can be less than the lower bound. To compute the near-extendable partitions of a subtree at vertex *v*, we are given the set of near-extendable partitions for each child *v<sub>i</sub>* of *v*, where the children are arbitrarily numbered. Consider the tree with root *v* and including all subtrees at children numbered up to and including *i* and its "predecessor tree", the same tree but up to child *i*-1. The near-extendable partitions of this tree can be computed by merging near-extendable partitions of the predecessor tree and near-extendable partitions of the subtree at *v<sub>i</sub>* such that the total number of components is at most *p*. These partitions can be cased on whether the component containing *v<sub>i</sub>* is merged with the component containing *v*. If yes, the merged component must meet the upper bound; otherwise, the component containing *v<sub>i</sub>* must meet both the lower and upper bounds.
 
-TODO: parallelism within levels, parallelism across kprime
+Two possible axes of parallelism in this algorithm are within levels of the tree (since the only dependencies between parent and child) and across trying combinations of partitions (the loops through `k_prime` in the pseudocode). The speedup due to the former would be highly dependent on the depth and branching factor of the tree, while the latter is likely to be greatly limited by high contention to shared data structures.
 
-TODO: not all spanning trees have valid partitions, test multiple trees?
+Additionally, not all spanning trees of a graph with a valid LU partition are guaranteed to have valid LU partitions, so a more involved algorithm to generate spanning trees may be required to optimize the chances of finding a valid partition, or multiple spanning trees may need to be generated and tested. The later has high potential to be parallelized, as the partition computation for each spanning tree is separate.
 
 ## Pseudocode
 
@@ -105,7 +105,7 @@ We plan to deploy our solution on multicore CPUs (our computers, the GHC machine
 
 Week of 2022-03-27: Create efficient sequential implementation. If in C++, prioritize the naive algorithm. If in Python, consider implementing the faster "interval set" algorithm as well.
 
-Week of 2022-04-03: Implement parallelism within tree partition computation (across nodes in the same level in the postorder traversal of a tree). If viable, implement parallelism over the "k_prime" innermost loops (likely too high contention for data structures to achieve performance improvements, but worth testing).
+Week of 2022-04-03: Implement parallelism within tree partition computation (across nodes in the same level in the postorder traversal of a tree). If viable, implement parallelism over the `k_prime` innermost loops (likely too high contention for data structures to achieve performance improvements, but worth testing).
 
 Week of 2022-04-10 (Checkpoint): Experiment with different methods of work division for parallelism within the partition computation.
 
