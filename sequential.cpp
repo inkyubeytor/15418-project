@@ -2,6 +2,7 @@
 using std::vector;
 #include <utility>
 using std::pair;
+using std::make_pair;
 #include <unordered_map>
 using std::unordered_map;
 #include <unordered_set>
@@ -11,38 +12,29 @@ using std::unordered_set;
 
 
 typedef float cost_t;
+typedef unordered_map<int, unordered_set<cost_t>> set1_t;
+typedef unordered_set<int> set2_t;
+typedef unordered_map<cost_t, pair<set1_t, set2_t>> zdict_t;
+typedef unordered_map<int, zdict_t> kdict_t;
 
 vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
     // first vector: vertex index v
     // second vector: child index i for that vertex
-    // third vector: parts index k
+    // first map: parts index k ->
     // unordered_map: z -> pair<s1, s2>
     // s1 maps k' -> z' (the z', k' pairs earlier)
     // s2 is just k',   (the None, k' pairs earlier)
-    vector<vector<vector<
-        unordered_map<cost_t,
-            pair<
-                unordered_map<int, unordered_set<cost_t>>,
-                unordered_set<int>
-            >
-        >
-    >>> dp_table;
+    vector<vector<kdict_t>> dp_table;
 
-    // initialize empty dp table so we can refer to v and v_i out of order
+    // initialize empty dp table so we can refer to vs out of order
     int n = tree.size();
     for (int i = 0; i < n; i++) {
-        vector<vector<unordered_map<cost_t, pair<
-            unordered_map<int, unordered_set<cost_t>>,
-            unordered_set<int>
-        >>>> vec;
-        int neighborhood_size = tree.neighbors(i).size();
-        for (int j = 0; j < neighborhood_size; j++) {
-            vector<unordered_map<cost_t, pair<
-                unordered_map<int, unordered_set<cost_t>>,
-                unordered_set<int>
-            >>> inner_vec;
-            vec.push_back(inner_vec);
-        }
+        vector<kdict_t> vec;
+//        int neighborhood_size = tree.neighbors(i).size();
+//        for (int j = 0; j < neighborhood_size; j++) {
+//            kdict_t inner_vec;
+//            vec.push_back(inner_vec);
+//        }
         dp_table.push_back(vec);
     }
 
@@ -58,6 +50,11 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
         }
 
         // create parts_0 dict
+        kdict_t parts_0 {{1, {{tree.weight(v), {{}, {0}}}}}};
+        for (int k = 2; k <= parts; k++) {
+            zdict_t empty;
+            parts_0.insert(make_pair(k, empty));
+        };
 
 
     }
@@ -81,9 +78,9 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
 //    root = None
 //    for v in nx.dfs_postorder_nodes(dp_tree):
 //        children = set(dp_tree.neighbors(v)) & processed
-
 //        parts_0 = {k: {} for k in range(2, parts + 1)}
 //        parts_0[1] = {dp_tree.nodes[v]["weight"]: {(None, 0)}}
+
 //        dp_tree.nodes[v]["table"] = [{"vertex": None, "parts": parts_0}]
 //        for child in children:
 //            parts_dict = {}
