@@ -4,16 +4,49 @@ using std::vector;
 using std::pair;
 #include <unordered_map>
 using std::unordered_map;
+#include <unordered_set>
+using std::unordered_set;
 
 #include "lib/graph.cpp"
 
-typedef cost_t float;
 
-vector<int> naive_partition(Tree<cost_t> T, int parts, cost_t lower, cost_t upper) {
+typedef float cost_t;
+
+vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
     // first vector: vertex index v
     // second vector: child index i for that vertex
     // third vector: parts index k
-    vector<vector<vector<unordered_map<float, >>>>
+    // unordered_map: z -> pair<s1, s2>
+    // s1 maps k' -> z' (the z', k' pairs earlier)
+    // s2 is just k',   (the None, k' pairs earlier)
+    vector<vector<vector<
+        unordered_map<cost_t,
+            pair<
+                unordered_map<int, unordered_set<cost_t>>,
+                unordered_set<int>
+            >
+        >
+    >>> dp_table;
+
+    // TODO: initialize entire empty dp table
+
+    unordered_set<int> processed;
+    vector<int> postorder = tree.dfs_postorder_nodes();
+    int root = postorder.back();
+    for (int& v: postorder) {
+        // create children set
+        const vector<int>& neighbors = tree.neighbors(v);
+        unordered_set<int> children;
+        for (const int& neighbor: neighbors) {
+            if (processed.count(neighbor)) children.insert(neighbor);
+        }
+
+        // create parts_0 dict
+
+
+    }
+    vector<int> out;
+    return out;
 }
 
 
@@ -32,6 +65,7 @@ vector<int> naive_partition(Tree<cost_t> T, int parts, cost_t lower, cost_t uppe
 //    root = None
 //    for v in nx.dfs_postorder_nodes(dp_tree):
 //        children = set(dp_tree.neighbors(v)) & processed
+
 //        parts_0 = {k: {} for k in range(2, parts + 1)}
 //        parts_0[1] = {dp_tree.nodes[v]["weight"]: {(None, 0)}}
 //        dp_tree.nodes[v]["table"] = [{"vertex": None, "parts": parts_0}]
@@ -107,3 +141,15 @@ vector<int> naive_partition(Tree<cost_t> T, int parts, cost_t lower, cost_t uppe
 //
 //    print(assignment)
 //    return assignment
+
+int main() {
+    vector<float> weights = {0.0, 1.0, 2.0, 3.0};
+    vector<int> n0 = {1, 2};
+    vector<int> n1 = {};
+    vector<int> n2 = {3};
+    vector<int> n3 = {};
+    vector <vector<int>> adj = {n0, n1, n2, n3};
+    Tree<float> tree(adj, weights, 0);
+    vector<int> partition = naive_partition(tree, 2, 2.9, 3.1);
+    return 0;
+}

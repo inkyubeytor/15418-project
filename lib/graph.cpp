@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vector>
 #include <cassert>
 #include <stack>
@@ -53,17 +52,3 @@ public:
         return traversal;
     }
 };
-
-int main() {
-    vector<float> weights = {0.0, 1.0, 2.0, 3.0};
-    vector<int> n0 = {1, 2};
-    vector<int> n1 = {};
-    vector<int> n2 = {3};
-    vector<int> n3 = {};
-    vector <vector<int>> adj = {n0, n1, n2, n3};
-    Tree<float> T(adj, weights, 0);
-    vector<int> traversal = T.dfs_postorder_nodes();
-    for (int x: traversal) std::cout << x << " ";
-    std::cout << std::endl;
-    return 0;
-}
