@@ -7,6 +7,7 @@ using std::make_pair;
 using std::unordered_map;
 #include <unordered_set>
 using std::unordered_set;
+#include <iostream>
 
 #include "lib/graph.cpp"
 
@@ -17,24 +18,19 @@ typedef unordered_set<int> set2_t;
 typedef unordered_map<cost_t, pair<set1_t, set2_t>> zdict_t;
 typedef unordered_map<int, zdict_t> kdict_t;
 
-vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
+bool naive_decision(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
     // first vector: vertex index v
     // second vector: child index i for that vertex
     // first map: parts index k ->
     // unordered_map: z -> pair<s1, s2>
     // s1 maps k' -> z' (the z', k' pairs earlier)
     // s2 is just k',   (the None, k' pairs earlier)
-    vector<vector<kdict_t>> dp_table;
+    vector<vector<pair<int, kdict_t>>> dp_table;
 
     // initialize empty dp table so we can refer to vs out of order
     int n = tree.size();
     for (int i = 0; i < n; i++) {
-        vector<kdict_t> vec;
-//        int neighborhood_size = tree.neighbors(i).size();
-//        for (int j = 0; j < neighborhood_size; j++) {
-//            kdict_t inner_vec;
-//            vec.push_back(inner_vec);
-//        }
+        vector<pair<int, kdict_t>> vec;
         dp_table.push_back(vec);
     }
 
@@ -44,44 +40,85 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
     for (int& v: postorder) {
         // create children set
         const vector<int>& neighbors = tree.neighbors(v);
-        unordered_set<int> children;
+        vector<int> children;
         for (const int& neighbor: neighbors) {
-            if (processed.count(neighbor)) children.insert(neighbor);
+            if (processed.count(neighbor)) children.push_back(neighbor);
         }
 
         // create parts_0 dict
         kdict_t parts_0 {{1, {{tree.weight(v), {{}, {0}}}}}};
         for (int k = 2; k <= parts; k++) {
             zdict_t empty;
-            parts_0.insert(make_pair(k, empty));
+            parts_0[k] = empty;
         };
-        // add parts_0 to dp_table[v][0]?
-        dp_table[v][0] = parts_0;
 
-        int prev_child = -1;
+        // add parts_0 to dp_table[v]
+        dp_table[v].push_back(make_pair(-1, parts_0));
+
         for (int child : children) {
             kdict_t parts_i;
-            for (int k = 1; k < parts+1; k++) {
+            for (int k = 1; k < parts + 1; k++) {
                 zdict_t z_dict;
                 // S1
-                for (int k_prime = 1, k_prime < k+1; k_prime++) {
-                    // left, right, add to z_dict
-                    // left and right use last added child :/ store prev child in variable?
+                for (int k_prime = 1; k_prime < k + 1; k_prime++) {
+                    zdict_t left = dp_table[v].back().second[k_prime];
+                    zdict_t right = dp_table[child].back().second[k - k_prime + 1];
+                    for (auto l_it = left.begin(); l_it != left.end(); ++l_it) {
+                        cost_t a = l_it->first;
+                        for (auto r_it = right.begin(); r_it != right.end(); ++r_it) {
+                            cost_t b = r_it->first;
+                            if (!z_dict.count(a + b)) {
+                                set1_t s1;
+                                set2_t s2;
+                                z_dict[a + b] = make_pair(s1, s2);
+                            }
+                            if (!z_dict[a + b].first.count(k_prime)) {
+                                unordered_set<cost_t> inner_set;
+                                z_dict[a + b].first[k_prime] = inner_set;
+                            }
+                            z_dict[a + b].first[k_prime].insert(a);
+                        }
+                    }
                 }
+
                 // S2
-                for (int k_prime = 1, k_prime < k; k_prime++) {
-                    // left, right, add to z_dict
+                for (int k_prime = 1; k_prime < k; k_prime++) {
+                    zdict_t left = dp_table[v].back().second[k_prime];
+                    zdict_t right = dp_table[child].back().second[k - k_prime];
+                    for (auto r_it = right.begin(); r_it != right.end(); ++r_it) {
+                        cost_t b = r_it->first;
+                        if (lower <= b && b <= upper) {
+                            for (auto l_it = left.begin(); l_it != left.end(); ++l_it) {
+                                cost_t a = l_it->first;
+                                if (!z_dict.count(a)) {
+                                    set1_t s1;
+                                    set2_t s2;
+                                    z_dict[a] = make_pair(s1, s2);
+                                }
+                                z_dict[a].second.insert(k_prime);
+                            }
+                        }
+                    }
                 }
                 // add z_dict to parts_i
                 parts_i[k] = z_dict;
             }
             // add parts_i to dp_table[v][child] (correct for off by one idx?)
-            dp_table[v][child+1] = parts_i;
+            dp_table[v].push_back(make_pair(child, parts_i));
         }
         processed.insert(v);
     }
-    vector<int> out;
-    return out;
+
+    zdict_t final_zd = dp_table[root].back().second[parts];
+    for (auto it = final_zd.begin(); it != final_zd.end(); ++it) {
+        cost_t z = it->first;
+        if (lower <= z && z <= upper) {
+            return true;
+        }
+    }
+    return false;
+//    vector<int> out;
+//    return out;
 }
 
 
@@ -102,7 +139,6 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
 //        children = set(dp_tree.neighbors(v)) & processed
 //        parts_0 = {k: {} for k in range(2, parts + 1)}
 //        parts_0[1] = {dp_tree.nodes[v]["weight"]: {(None, 0)}}
-
 //        dp_tree.nodes[v]["table"] = [{"vertex": None, "parts": parts_0}]
 //        for child in children:
 //            parts_dict = {}
@@ -131,12 +167,14 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
 //                                    z_dict[a].add((None, k_prime))
 //                                except KeyError:
 //                                    z_dict[a] = {(None, k_prime)}
+
 //                parts_dict[k] = z_dict
 //            dp_tree.nodes[v]["table"].append(
 //                {"vertex": child, "parts": parts_dict})
 //        processed.add(v)
 //        root = v
 //
+
 //    # backtracking
 //    try:
 //        next(filter(lambda y: lower <= y <= upper,
@@ -185,6 +223,6 @@ int main() {
     vector<int> n3 = {};
     vector <vector<int>> adj = {n0, n1, n2, n3};
     Tree<float> tree(adj, weights, 0);
-    vector<int> partition = naive_partition(tree, 2, 2.9, 3.1);
+     std::cout << naive_decision(tree, 3, 0.9, 3.1) << std::endl;
     return 0;
 }
