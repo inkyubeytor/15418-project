@@ -22,18 +22,19 @@ Tree bfs_st(Graph input_graph, int root) {
     bool visited[input_graph.size()];
     queue<int> frontier;
     frontier.push(root);
+    visited[root] = true;
 
     while (!frontier.empty()) {
         int node = frontier.front();
         frontier.pop();
-        visited[node] = true;
         vector<int> neighbors = input_graph.neighbors(node);
         new_adj_list[node].reserve(neighbors.size());
         for (int n : neighbors) {
             if (!visited[n]) {
+                visited[n] = true;
                 new_adj_list[node].push_back(n);
                 frontier.push(n);
-//                printf("succesfully added edge %d to %d\n", node, n);
+                printf("succesfully added edge %d to %d\n", node, n);
             }
         }
     }
@@ -49,13 +50,14 @@ Tree bfs_st(Graph input_graph, int root) {
 int main() {
     vector<float> weights = {0.0, 1.0, 2.0, 3.0};
     vector<int> n0 = {1, 2};
-    vector<int> n1 = {0};
-    vector<int> n2 = {0, 3};
+    vector<int> n1 = {0, 2};
+    vector<int> n2 = {0, 1, 3};
     vector<int> n3 = {2};
     vector <vector<int>> adj = {n0, n1, n2, n3};
     Graph G(adj, weights);
     Tree T(adj, weights, 0);
-    Tree ST = bfs_st(G, 0);
+    Tree BFSST = bfs_st(G, 3);
+//    Tree MST =
 //    vector<int> traversal = T.dfs_postorder_nodes();
 //    for (int x: traversal) std::cout << x << " ";
 //    std::cout << std::endl;
