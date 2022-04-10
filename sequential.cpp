@@ -28,7 +28,23 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
         >
     >>> dp_table;
 
-    // TODO: initialize entire empty dp table
+    // initialize empty dp table so we can refer to v and v_i out of order
+    int n = tree.size();
+    for (int i = 0; i < n; i++) {
+        vector<vector<unordered_map<cost_t, pair<
+            unordered_map<int, unordered_set<cost_t>>,
+            unordered_set<int>
+        >>>> vec;
+        int neighborhood_size = tree.neighbors(i).size();
+        for (int j = 0; j < neighborhood_size; j++) {
+            vector<unordered_map<cost_t, pair<
+                unordered_map<int, unordered_set<cost_t>>,
+                unordered_set<int>
+            >>> inner_vec;
+            vec.push_back(inner_vec);
+        }
+        dp_table.push_back(vec);
+    }
 
     unordered_set<int> processed;
     vector<int> postorder = tree.dfs_postorder_nodes();
