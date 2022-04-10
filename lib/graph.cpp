@@ -22,6 +22,11 @@ public:
 
     float weight(int node) { return weights[node]; }
 
+    vector<float> copy_weights() {
+        vector<float> weights_copy(weights);
+        return weights_copy;
+    }
+
     const vector<int> &neighbors(int node) { return adj_list[node]; }
 };
 
