@@ -55,8 +55,30 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
             zdict_t empty;
             parts_0.insert(make_pair(k, empty));
         };
+        // add parts_0 to dp_table[v][0]?
+        dp_table[v][0] = parts_0;
 
-
+        int prev_child = -1;
+        for (int child : children) {
+            kdict_t parts_i;
+            for (int k = 1; k < parts+1; k++) {
+                zdict_t z_dict;
+                // S1
+                for (int k_prime = 1, k_prime < k+1; k_prime++) {
+                    // left, right, add to z_dict
+                    // left and right use last added child :/ store prev child in variable?
+                }
+                // S2
+                for (int k_prime = 1, k_prime < k; k_prime++) {
+                    // left, right, add to z_dict
+                }
+                // add z_dict to parts_i
+                parts_i[k] = z_dict;
+            }
+            // add parts_i to dp_table[v][child] (correct for off by one idx?)
+            dp_table[v][child+1] = parts_i;
+        }
+        processed.insert(v);
     }
     vector<int> out;
     return out;
