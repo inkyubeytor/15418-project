@@ -1,8 +1,13 @@
 #include <vector>
 using std::vector;
+#include <queue>
+using std::queue;
 #include <utility>
 using std::pair;
 using std::make_pair;
+#include <tuple>
+using std::tuple;
+using std::make_tuple;
 #include <unordered_map>
 using std::unordered_map;
 #include <unordered_set>
@@ -17,8 +22,9 @@ typedef unordered_map<int, unordered_set<cost_t>> set1_t;
 typedef unordered_set<int> set2_t;
 typedef unordered_map<cost_t, pair<set1_t, set2_t>> zdict_t;
 typedef unordered_map<int, zdict_t> kdict_t;
+typedef tuple<int, cost_t, int, int, int> partition_info_t;
 
-bool naive_decision(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
+vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
     // first vector: vertex index v
     // second vector: child index i for that vertex
     // first map: parts index k ->
@@ -109,16 +115,74 @@ bool naive_decision(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
         processed.insert(v);
     }
 
+    vector<int> assignment(tree.size(), -1);
+    bool exists = false;
+    cost_t final_z;
     zdict_t final_zd = dp_table[root].back().second[parts];
     for (auto it = final_zd.begin(); it != final_zd.end(); ++it) {
         cost_t z = it->first;
         if (lower <= z && z <= upper) {
-            return true;
+            exists = true;
+            final_z = z;
+            break;
         }
     }
-    return false;
-//    vector<int> out;
-//    return out;
+    if (!exists) {
+        return assignment;  // figure out what we want this to be
+    }
+
+    assignment[root] = 0;
+    int max_part_num = 0;
+
+    queue<partition_info_t> input_queue;
+    input_queue.push(make_tuple(root, -1, parts, dp_table[root].size() - 1, 0));
+
+
+    while (!input_queue.empty()) {
+        int v, k, i, v_part_num;
+        cost_t z;
+        std::tie(v, z, k, i, v_part_num) = input_queue.front();
+        input_queue.pop();
+
+        if (i == 0) {
+            continue;
+        }
+
+        if (z == -1) {  // start new partition
+            zdict_t zd = dp_table[v][i].second[k];
+            for (auto it = zd.begin(); it != zd.end(); ++it) {
+                cost_t z1 = it->first;
+                if (lower <= z1 && z1 <= upper) {
+                    z = z1;
+                    break;
+                }
+            }
+            if (z == -1) {  // comment out after testing
+                printf("error: z not found\n");
+                break;
+            }
+        }
+
+        int vp = dp_table[v][i].first;
+        set1_t s1 = dp_table[v][i].second[k][z].first;
+        set2_t s2 = dp_table[v][i].second[k][z].second;
+
+        if (!s2.empty()) {
+            int kp = *s2.begin();
+            int new_part_num = ++max_part_num;
+            assignment[vp] = new_part_num;
+            input_queue.push(make_tuple(v, z, kp, i - 1, v_part_num));
+            input_queue.push(make_tuple(vp, -1, k - kp, dp_table[vp].size() - 1, new_part_num));
+        } else {
+            int kp = s1.begin()->first;
+            cost_t zp = *s1.begin()->second.begin();
+            assignment[vp] = v_part_num;
+            input_queue.push(make_tuple(v, zp, kp, i - 1, v_part_num));
+            input_queue.push(make_tuple(vp, z - zp, k - kp + 1, dp_table[vp].size() - 1, v_part_num));
+        }
+    }
+
+    return assignment;
 }
 
 
@@ -167,7 +231,6 @@ bool naive_decision(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
 //                                    z_dict[a].add((None, k_prime))
 //                                except KeyError:
 //                                    z_dict[a] = {(None, k_prime)}
-
 //                parts_dict[k] = z_dict
 //            dp_tree.nodes[v]["table"].append(
 //                {"vertex": child, "parts": parts_dict})
@@ -223,6 +286,8 @@ int main() {
     vector<int> n3 = {};
     vector <vector<int>> adj = {n0, n1, n2, n3};
     Tree<float> tree(adj, weights, 0);
-     std::cout << naive_decision(tree, 3, 0.9, 3.1) << std::endl;
+    vector<int> partition = naive_partition(tree, 3, 0.9, 3.1);
+    for (int p: partition)
+        std::cout << p << std::endl;
     return 0;
 }
