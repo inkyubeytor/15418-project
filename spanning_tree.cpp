@@ -108,3 +108,9 @@ Tree<float> min_st(Graph<float> input_graph, int root, float (*edge_weight)(int,
     Tree<float> output_graph(new_adj_list, input_graph.copy_weights(), root);
     return output_graph;
 }
+
+// random spanning tree by setting random edge weights and root and finding minimum spanning tree
+Tree<float> rand_st(Graph<float> input_graph) {
+    int root = std::rand() % input_graph.size();
+    return min_st(input_graph, root, rand_edge_weight);
+}
