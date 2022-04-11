@@ -8,12 +8,16 @@
 #include <utility>
 #include <functional>
 #include <algorithm>
-#include "lib/graph.cpp"
-// #include "spanning_tree.h"
 
 using std::queue;
 using std::vector;
 using std::priority_queue;
+
+#ifndef GRAPH
+#define GRAPH
+#include "lib/graph.cpp"
+#endif
+
 
 typedef std::pair<float, std::pair<int, int>> edge_t;
 
@@ -104,18 +108,4 @@ Tree<float> min_st(Graph<float> input_graph, int root, float (*edge_weight)(int,
     }
     Tree<float> output_graph(new_adj_list, input_graph.copy_weights(), root);
     return output_graph;
-}
-
-int main() {
-    vector<float> weights = {0.0, 1.0, 2.0, 3.0};
-    vector<int> n0 = {1, 2};
-    vector<int> n1 = {0, 2};
-    vector<int> n2 = {0, 1, 3};
-    vector<int> n3 = {2};
-    vector <vector<int>> adj = {n0, n1, n2, n3};
-    Graph<float> G(adj, weights);
-    Tree<float> T(adj, weights, 0);
-    Tree<float> BFSST = bfs_st(G, 3);
-    Tree<float> MST = min_st(G, 3, simple_edge_weight);
-    return 0;
 }
