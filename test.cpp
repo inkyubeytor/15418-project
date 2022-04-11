@@ -2,6 +2,15 @@
 // Created by ancai on 4/11/2022.
 //
 
+#include <iostream>
+#include <unordered_map>
+using std::unordered_map;
+#include <set>
+using std::set;
+#include <stack>
+using std::stack;
+#include <numeric>
+
 #ifndef GRAPH
 #define GRAPH
 #include "lib/graph.cpp"
@@ -9,6 +18,8 @@
 
 #include "spanning_tree.cpp"
 #include "sequential.cpp"
+
+typedef unordered_map<int, set<int>> rev_assignment_t;
 
 Graph<float> get_G1() {
     vector<float> weights = {0.0, 1.0, 2.0, 3.0};
@@ -41,17 +52,69 @@ int test_graph() {
 }
 
 int test_spanning_tree() {
-    Graph<float> G = get_G1();
-    Tree<float> BFSST = bfs_st(G, 3);
-    Tree<float> MST = min_st(G, 3, simple_edge_weight);
+    Graph<float> G1 = get_G1();
+    Tree<float> BFSST = bfs_st(G1, 3);
+    Tree<float> MST = min_st(G1, 3, simple_edge_weight);
+    return 0;
+}
+
+bool check_connectivity(Graph<float> G, set<int> nodes) {
+    bool visited[G.size()];
+    std::fill_n(visited, G.size(), false);
+    int root = *nodes.begin();
+    stack<int> frontier;
+    frontier.push(root);
+    visited[root] = true;
+    int num_visited = 1;
+
+    while (!frontier.empty()) {
+        int node = frontier.top();
+        frontier.pop();
+        vector<int> neighbors = G.neighbors(node);
+        for (int n : neighbors) {
+            if (!visited[n] && nodes.find(n) != nodes.end()) {
+                visited[n] = true;
+                num_visited++;
+                frontier.push(n);
+            }
+        }
+    }
+    return num_visited == nodes.size();
+}
+
+int check_partition(Graph<float> G, vector<int> assignment, cost_t lower, cost_t upper) {
+    rev_assignment_t rev_assign;
+    for (int v = 0; v < assignment.size(); v++) {
+        int part_num = assignment[v];
+        rev_assign[part_num].insert(v);
+    }
+
+    for (auto it = rev_assign.begin(); it != rev_assign.end(); ++it) {
+        int part_num = it->first;
+        set<int> nodes = it->second;
+        if (!check_connectivity(G, nodes)) {
+            printf("failed: part %d not connected\n", part_num);
+            return 1;
+        }
+        cost_t z = 0;
+        for (auto node_it = nodes.begin(); node_it != nodes.end(); ++node_it) {
+            z += G.weight(*node_it);
+        }
+        if (!(lower <= z && z <= upper)) {
+            printf("failed: part %d not in cost bound\n", part_num);
+            return 1;
+        }
+    }
+    printf("success\n");
     return 0;
 }
 
 int test_sequential() {
-    Tree<float> tree = get_T1();
-    vector<int> partition = naive_partition(tree, 3, 0.9, 3.1);
-    for (int p: partition)
-        std::cout << p << std::endl;
+    Graph<float> G1 = get_G1();
+    Tree<float> T1 = get_T1();
+    vector<int> assignment = naive_partition(T1, 3, 0.9, 3.1);
+    printf("test 1: ");
+    check_partition(G1, assignment, 0.9, 3.1);
     return 0;
 }
 

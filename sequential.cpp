@@ -112,7 +112,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
                 // add z_dict to parts_i
                 parts_i[k] = z_dict;
             }
-            // add parts_i to dp_table[v][child] (correct for off by one idx?)
+            // add parts_i to dp_table[v][child] (correct for off by one idx)
             dp_table[v].push_back(make_pair(child, parts_i));
         }
         processed.insert(v);
@@ -120,18 +120,16 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
 
     vector<int> assignment(tree.size(), -1);
     bool exists = false;
-    cost_t final_z;
     zdict_t final_zd = dp_table[root].back().second[parts];
     for (auto it = final_zd.begin(); it != final_zd.end(); ++it) {
         cost_t z = it->first;
         if (lower <= z && z <= upper) {
             exists = true;
-            final_z = z;
             break;
         }
     }
     if (!exists) {
-        return assignment;  // figure out what we want this to be
+        return assignment;
     }
 
     assignment[root] = 0;

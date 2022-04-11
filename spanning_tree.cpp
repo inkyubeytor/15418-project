@@ -2,11 +2,10 @@
 // Created by ancai on 4/9/2022.
 //
 
-#include <random>
+#include <cstdlib>
 #include <queue>
 #include <vector>
 #include <utility>
-#include <functional>
 #include <algorithm>
 
 using std::queue;
@@ -53,12 +52,12 @@ Tree<float> bfs_st(Graph<float> input_graph, int root) {
     return output_graph;
 }
 
-//bool edge_compare(const edge_t& a, const edge_t& b) {
-//    return a.first > b.first;
-//}
-
 float simple_edge_weight(int a, int b) {
     return static_cast<float>(a + b);
+}
+
+float rand_edge_weight(int a, int b) {
+    return static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);;
 }
 
 // Prim's algorithm
