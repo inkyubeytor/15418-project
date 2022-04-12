@@ -173,7 +173,7 @@ Week of 2022-04-17 1st half:
 
 Week of 2022-04-17 2nd half:
  * Abhi: Experiment with MPI as an alternative to OpenMP when parallelizing over multiple spanning trees.
-
+ * Anna: Experiment with parallelizing backtracking via a work queue system.
 Week of 2022-04-24 1st half:
  * Anna: Implement parallel minimum spanning tree algorithms and test the performance of different spanning tree methods.
  * Abhi: Work on instrumenting code for visualization.
