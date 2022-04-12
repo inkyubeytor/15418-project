@@ -65,7 +65,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
         for (int child : children) {
             kdict_t parts_i;
 
-#pragma omp parallel
+#pragma omp parallel for
             for (int k = 1; k < parts + 1; k++) {
                 zdict_t z_dict;
                 // S1
@@ -196,7 +196,7 @@ int main() {
     vector<int> n3 = {};
     vector <vector<int>> adj = {n0, n1, n2, n3};
     Tree<float> tree(adj, weights, 0);
-    vector<int> partition = naive_partition(tree, 3, 2.1, 3.1);
+    vector<int> partition = naive_partition(tree, 3, 0.1, 3.1);
     for (int p: partition)
         std::cout << p << std::endl;
     return 0;
