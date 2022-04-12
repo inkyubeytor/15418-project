@@ -146,7 +146,21 @@ Our current list of goals for the poster session is:
 At the poster session, we plan to show speedup plots for all parallel solutions tried, focusing on those that produced the best results.
 We also plan to show some visualization (at the very least a series of static visualizations) of a graph being partitioned, attempting to indicate where parallelism exists in the partitioning process.
 
-## Preliminary Results - TODO
+## Preliminary Results
+
+GHC 48
+
+Metric            | 1.1 Large Time | 1.2 Large Time
+----------------- | -------------- | --------------
+Sequential        | 0.043144       | 4.594513
+Across Levels n=1 | 0.044390       | 4.724586
+Across Levels n=2 | 0.050051       | 5.671142
+Across Levels n=4 | 0.037035       | 5.477761
+Across Levels n=8 | 0.028917       | 5.469460
+Within Child n=1  | 0.047817       | 4.525150
+Within Child n=2  | 0.055472       | 4.804996
+Within Child n=4  | 0.042690       | 2.946028
+Within Child n=8  | 0.036224       | 1.641346
 
 ## Concerns
 
