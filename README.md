@@ -112,3 +112,18 @@ Week of 2022-04-10 (Checkpoint): Experiment with different methods of work divis
 Week of 2022-04-17: Implement parallel minimum spanning tree computations and experiment with choosing spanning trees that make valid partitions more likely to exist.
 
 Week of 2022-04-24: Implement parallelism by attempting to compute the problem for sub-partitions of the graph and combining them.
+
+
+# MILESTONE
+
+The first piece of work we did was create an efficient sequential implementation of our algorithm in C++.
+We wrote our own graph (and tree) representations and designed a way to read them from files.
+We also wrote graph traversals and sequential spanning tree algorithms.
+We then implemented the efficient naive partition algorithm.
+We chose not to implement the interval set algorithm because the naive algorithm is more generalizable to other tasks involving partitions.
+
+The second piece of work we did was implement and test two forms of parallelism with OpenMP.
+The first form of parallelism involves parallelizing an existing loop over part counts k.
+The second form of parallelism involves changing our DFS postorder traversal of our tree into a "levels" based traversal, where each node's parent is the in preceding level.
+We then parallelized our computation over each level of vertices, because these sets can be dealt with independently.
+Both forms of parallelism involve critical sections (updates to shared data structures) that must be handled separately.
