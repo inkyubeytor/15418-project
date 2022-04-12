@@ -51,4 +51,19 @@ public:
         reverse(traversal.begin(), traversal.end());
         return traversal;
     }
+
+    vector<vector<int>> dfs_postorder_levels() {
+        vector<vector<int>> traversal {{this->root}};
+        while (!traversal.back().empty()) {
+            vector<int> next_vec;
+            for (int v: traversal.back()) {
+                for (int child: this->neighbors(v)) {
+                    next_vec.push_back(child);
+                }
+            }
+            traversal.push_back(next_vec);
+        }
+        reverse(traversal.begin(), traversal.end());
+        return traversal;
+    }
 };
