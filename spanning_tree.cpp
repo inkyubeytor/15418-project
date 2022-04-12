@@ -44,7 +44,7 @@ Tree<float> bfs_st(Graph<float> input_graph, int root) {
                 visited[n] = true;
                 new_adj_list[node].push_back(n);
                 frontier.push(n);
-                printf("added edge %d to %d\n", node, n);
+//                printf("added edge %d to %d\n", node, n);
             }
         }
     }
@@ -95,7 +95,7 @@ Tree<float> min_st(Graph<float> input_graph, int root, float (*edge_weight)(int,
         }
         visited[notinset] = true;
         new_adj_list[inset].push_back(notinset);
-        printf("added edge %d to %d\n", inset, notinset);
+//        printf("added edge %d to %d\n", inset, notinset);
         num_visited++;
         for (int n : input_graph.neighbors(notinset)) {
             if (!visited[n]) {

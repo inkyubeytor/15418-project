@@ -169,6 +169,37 @@ int test_rand_st() {
     return 0;
 }
 
+int test_sequential_random() {
+    printf("-----\n");
+    printf("random graphs\n");
+
+    Graph<float> Gsmall1 = get_Gsmall1();
+    Tree<float> Tsmall1 = bfs_st(Gsmall1, 0);
+    printf("test small 1.1 (FAIL): ");
+    test_partition(Gsmall1, Tsmall1, 5, 12.0, 20.0);
+    printf("test small 1.2 (PASS): ");
+    test_partition(Gsmall1, Tsmall1, 5, 10.0, 22.0);
+    printf("test small 1.3 (FAIL): ");
+    test_partition(Gsmall1, Tsmall1, 4, 15.0, 25.0);
+    printf("test small 1.4 (PASS): ");
+    test_partition(Gsmall1, Tsmall1, 4, 10.0, 30.0);
+    printf("test small 1.5 (PASS): ");
+    test_partition(Gsmall1, Tsmall1, 2, 35.0, 45.0);
+
+    Graph<float> Gmed1 = get_Gmed1();
+    Tree<float> Tmed1 = bfs_st(Gmed1, 0);
+    printf("test med 1.1 (PASS): ");
+    test_partition(Gmed1, Tmed1, 10, 75.0, 125.0);
+
+    Graph<float> Glarge1 = get_Glarge1();
+    Tree<float> Tlarge1 = bfs_st(Glarge1, 0);
+    printf("test large 1.1 (FAIL): ");
+    test_partition(Glarge1, Tlarge1, 10, 900.0, 1100.0);
+    printf("test large 1.2 (PASS): ");
+    test_partition(Glarge1, Tlarge1, 20, 400.0, 600.0);
+    return 0;
+}
+
 int main() {
 //    printf("testing graph\n");
 //    test_graph();
@@ -177,6 +208,7 @@ int main() {
 //    printf("testing random spanning tree\n");
 //    test_rand_st();
     printf("testing sequential algo\n");
-    test_sequential_simple();
+//    test_sequential_simple();
+    test_sequential_random();
     return 0;
 };

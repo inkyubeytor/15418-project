@@ -2,6 +2,12 @@
 // Created by ancai on 4/11/2022.
 //
 
+#include <iostream>
+#include <fstream>
+#include <string>
+using std::string;
+#include <sstream>
+
 #ifndef GRAPH
 #define GRAPH
 #include "lib/graph.cpp"
@@ -9,6 +15,44 @@
 
 
 typedef unordered_map<int, set<int>> rev_assignment_t;
+
+Graph<float> tree_from_file(const char* filename) {
+    vector<float> weights;
+    vector<vector<int>> adj;
+
+    std::ifstream file (filename);
+    if (file.is_open()) {
+        string size_string, weight_string, edge_string;
+
+        std::getline(file, size_string);
+        int size = std::stoi(size_string);
+
+        weights.reserve(size);
+        adj.reserve(size);
+        for (int i = 0; i < size; i++) {
+            std::getline(file, weight_string);
+            weights.push_back(std::stof(weight_string));
+            adj.push_back(vector<int>());
+        }
+
+        while (std::getline(file, edge_string)) {
+            std::stringstream ss(edge_string);
+            int a, b;
+            ss >> a >> b;
+            adj[a].push_back(b);
+            adj[b].push_back(a);
+        }
+
+        file.close();
+
+        Graph<float> G(adj, weights);
+        return G;
+    } else {
+        printf("error opening file\n");
+        Graph<float> G(adj, weights);
+        return(G);
+    }
+}
 
 Graph<float> get_G0() {
     vector<float> weights = {0.0, 1.0, 2.0, 3.0};
@@ -132,4 +176,19 @@ Tree<float> get_T3() {
     vector <vector<int>> adj = {n0, n1, n2, n3, n4, n5, n6};
     Tree<float> T(adj, weights, 0);
     return T;
+}
+
+Graph<float> get_Gsmall1() {
+    Graph<float> G = tree_from_file("test_cases/small1.txt");
+    return G;
+}
+
+Graph<float> get_Gmed1() {
+    Graph<float> G = tree_from_file("test_cases/med1.txt");
+    return G;
+}
+
+Graph<float> get_Glarge1() {
+    Graph<float> G = tree_from_file("test_cases/large1.txt");
+    return G;
 }
