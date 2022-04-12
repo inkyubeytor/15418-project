@@ -105,36 +105,36 @@ int test_sequential_simple() {
 
     Graph<float> G0 = get_G0();
     Tree<float> T0 = get_T0();
-    printf("test 0.1 (PASS): ");
+    printf("test 0.1 (PASS):\n");
     test_partition(G0, T0, 3, 0.9, 3.1);
 
     Graph<float> G1 = get_G1();
     Tree<float> T1 = get_T1();
-    printf("test 1.1 (PASS): ");
+    printf("test 1.1 (PASS):\n");
     test_partition(G1, T1, 3, 4.0, 6.0);
-    printf("test 1.2 (PASS): ");
+    printf("test 1.2 (PASS):\n");
     test_partition(G1, T1, 2, 5.0, 10.0);
-    printf("test 1.3 (FAIL): ");
+    printf("test 1.3 (FAIL):\n");
     test_partition(G1, T1, 1, 4.0, 6.0);
-    printf("test 1.4 (FAIL): ");
+    printf("test 1.4 (FAIL):\n");
     test_partition(G1, T1, 4, 2.0, 3.0);
-    printf("test 1.5 (FAIL): ");
+    printf("test 1.5 (FAIL):\n");
     test_partition(G1, T1, 5, 2.0, 3.0);
 
     Graph<float> G2 = get_G2();
     Tree<float> T2 = get_T2();
-    printf("test 2.1 (PASS): ");
+    printf("test 2.1 (PASS):\n");
     test_partition(G2, T2, 15, 1.0, 2.0);
-    printf("test 2.2 (PASS): ");
+    printf("test 2.2 (PASS):\n");
     test_partition(G2, T2, 5, 3.0, 3.0);
-    printf("test 2.3 (FAIL): ");
+    printf("test 2.3 (FAIL):\n");
     test_partition(G2, T2, 4, 2.0, 3.0);
 
     Graph<float> G3 = get_G3();
     Tree<float> T3 = get_T3();
-    printf("test 3.1 (PASS): ");
+    printf("test 3.1 (PASS):\n");
     test_partition(G3, T3, 3, 5.5, 8.5);
-    printf("test 3.2 (FAIL): ");
+    printf("test 3.2 (FAIL):\n");
     test_partition(G3, T3, 7, 0.5, 5.5);
     return 0;
 }
@@ -142,29 +142,29 @@ int test_sequential_simple() {
 int test_rand_st() {
     Graph<float> G0 = get_G0();
     Tree<float> T0 = rand_st(G0);
-    printf("test 0.1 (PASS): ");
+    printf("test 0.1 (PASS):\n");
     test_partition(G0, T0, 3, 0.9, 3.1);
 
     Graph<float> G1 = get_G1();
     Tree<float> T1 = rand_st(G1);
-    printf("test 1.1 (PASS): ");
+    printf("test 1.1 (PASS):\n");
     test_partition(G1, T1, 3, 4.0, 6.0);
-    printf("test 1.2 (PASS): ");
+    printf("test 1.2 (PASS):\n");
     test_partition(G1, T1, 2, 5.0, 10.0);
-    printf("test 1.3 (FAIL): ");
+    printf("test 1.3 (FAIL):\n");
     test_partition(G1, T1, 1, 4.0, 6.0);
-    printf("test 1.4 (FAIL): ");
+    printf("test 1.4 (FAIL):\n");
     test_partition(G1, T1, 4, 2.0, 3.0);
-    printf("test 1.5 (FAIL): ");
+    printf("test 1.5 (FAIL):\n");
     test_partition(G1, T1, 5, 2.0, 3.0);
 
     Graph<float> G2 = get_G2();
     Tree<float> T2 = rand_st(G2);
-    printf("test 2.1 (PASS): ");
+    printf("test 2.1 (PASS):\n");
     test_partition(G2, T2, 15, 1.0, 2.0);
-    printf("test 2.2 (PASS): ");
+    printf("test 2.2 (PASS):\n");
     test_partition(G2, T2, 5, 3.0, 3.0);
-    printf("test 2.3 (FAIL): ");
+    printf("test 2.3 (FAIL):\n");
     test_partition(G2, T2, 4, 2.0, 3.0);
     return 0;
 }
@@ -175,27 +175,27 @@ int test_sequential_random() {
 
     Graph<float> Gsmall1 = get_Gsmall1();
     Tree<float> Tsmall1 = bfs_st(Gsmall1, 0);
-    printf("test small 1.1 (FAIL): ");
+    printf("test small 1.1 (FAIL):\n");
     test_partition(Gsmall1, Tsmall1, 5, 12.0, 20.0);
-    printf("test small 1.2 (PASS): ");
+    printf("test small 1.2 (PASS):\n");
     test_partition(Gsmall1, Tsmall1, 5, 10.0, 22.0);
-    printf("test small 1.3 (FAIL): ");
+    printf("test small 1.3 (FAIL):\n");
     test_partition(Gsmall1, Tsmall1, 4, 15.0, 25.0);
-    printf("test small 1.4 (PASS): ");
+    printf("test small 1.4 (PASS):\n");
     test_partition(Gsmall1, Tsmall1, 4, 10.0, 30.0);
-    printf("test small 1.5 (PASS): ");
+    printf("test small 1.5 (PASS):\n");
     test_partition(Gsmall1, Tsmall1, 2, 35.0, 45.0);
 
     Graph<float> Gmed1 = get_Gmed1();
     Tree<float> Tmed1 = bfs_st(Gmed1, 0);
-    printf("test med 1.1 (PASS): ");
+    printf("test med 1.1 (PASS):\n");
     test_partition(Gmed1, Tmed1, 10, 75.0, 125.0);
 
     Graph<float> Glarge1 = get_Glarge1();
     Tree<float> Tlarge1 = bfs_st(Glarge1, 0);
-    printf("test large 1.1 (FAIL): ");
+    printf("test large 1.1 (FAIL):\n");
     test_partition(Glarge1, Tlarge1, 10, 900.0, 1100.0);
-    printf("test large 1.2 (PASS): ");
+    printf("test large 1.2 (PASS):\n");
     test_partition(Glarge1, Tlarge1, 20, 400.0, 600.0);
     return 0;
 }

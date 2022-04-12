@@ -13,6 +13,7 @@ using std::unordered_map;
 #include <unordered_set>
 using std::unordered_set;
 #include <iostream>
+#include <chrono>
 
 #ifndef GRAPH
 #define GRAPH
@@ -28,6 +29,13 @@ typedef unordered_map<int, zdict_t> kdict_t;
 typedef tuple<int, cost_t, int, int, int> partition_info_t;
 
 vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
+    using namespace std::chrono;
+    typedef std::chrono::high_resolution_clock Clock;
+    typedef std::chrono::duration<double> dsec;
+
+    auto compute_start = Clock::now();
+    double compute_time = 0;
+
     // first vector: vertex index v
     // second vector: child index i for that vertex
     // first map: parts index k ->
@@ -118,6 +126,12 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
         processed.insert(v);
     }
 
+    compute_time += duration_cast<dsec>(Clock::now() - compute_start).count();
+    printf("computation time: %lf.\n", compute_time);
+
+    auto backtrack_start = Clock::now();
+    double backtrack_time = 0;
+
     vector<int> assignment(tree.size(), -1);
     bool exists = false;
     zdict_t final_zd = dp_table[root].back().second[parts];
@@ -182,6 +196,9 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
             input_queue.push(make_tuple(vp, z - zp, k - kp + 1, dp_table[vp].size() - 1, v_part_num));
         }
     }
+
+    backtrack_time += duration_cast<dsec>(Clock::now() - backtrack_start).count();
+    printf("backtracking time: %lf.\n", backtrack_time);
 
     return assignment;
 }
