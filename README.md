@@ -158,3 +158,25 @@ We are currently resolving this by generating many types of random graphs.
 If we discover that some forms of parallelism are much better for certain types of graphs than others, we may hand engineer some test cases to demonstrate this.
 
 ## Updated Schedule
+
+Week of 2022-04-10 1st half:
+ * Anna: Implement parallelism over multiple possible spanning trees for an arbitrary graph partitioning algorithm.
+ * Abhi: Experiment with different types of OMP work division in the levels-based and within-child parallelism.
+
+Week of 2022-04-10 2nd half:
+ * Anna: Look into lock-free concurrent hash maps to allow finer-grained parallelism.
+ * Abhi: Experiment with OpenMP nested parallelism for computing sets S1 and S2.
+
+Week of 2022-04-17 1st half:
+ * Abhi: Experiment with reordering graph based on traversal to improve locality.
+ * Anna: Experiment with priority-queueing with multiple spanning trees when finding a good spanning tree is hard: create more trees than the number of execution contexts, then have threads switch to different pieces of work if their piece is looking bad.
+
+Week of 2022-04-17 2nd half:
+ * Abhi: Experiment with MPI as an alternative to OpenMP when parallelizing over multiple spanning trees.
+
+Week of 2022-04-24 1st half:
+ * Anna: Implement parallel minimum spanning tree algorithms and test the performance of different spanning tree methods.
+ * Abhi: Work on instrumenting code for visualization.
+
+Week of 2022-04-24 2nd half:
+ * Abhi: Work on producing visualizations.
