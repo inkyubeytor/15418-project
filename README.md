@@ -127,3 +127,34 @@ The first form of parallelism involves parallelizing an existing loop over part 
 The second form of parallelism involves changing our DFS postorder traversal of our tree into a "levels" based traversal, where each node's parent is the in preceding level.
 We then parallelized our computation over each level of vertices, because these sets can be dealt with independently.
 Both forms of parallelism involve critical sections (updates to shared data structures) that must be handled separately.
+
+## Deliverables and Progress
+
+We are currently on track for our schedule. We have finished both deliverables from the previous two weeks and we have begun to implement code for spanning tree algorithms that will be parallelized in week 4.
+We believe we will be able to achieve all of our 100% goals at this time, though not necessarily our 125% goals.
+We may be able to achieve some 125% goals (e.g. spanning tree) depending on how much time we put into our 100% visualization system.
+Our current list of goals for the poster session is:
+
+## Poster Session Goals
+* Achieve increasing speedups with up to 8 cores using parallelism within the computation for a given tree.
+* Implement the "trivial" parallel solution of having each core compute the problem for a different spanning tree of the same graph.
+* Comparative analysis of different parallel spanning tree algorithms and how choices of spanning tree can lead to fewer partitioning attempts.
+* Combine orthogonal parallelism strategies to increase speedup (e.g. multiple trees and parallelism across levels).
+* Speedup tables and plots for all parallel solutions tried.
+* Develop a visual demonstration for how graphs are being partitioned by the algorithm.
+
+At the poster session, we plan to show speedup plots for all parallel solutions tried, focusing on those that produced the best results.
+We also plan to show some visualization (at the very least a series of static visualizations) of a graph being partitioned, attempting to indicate where parallelism exists in the partitioning process.
+
+## Preliminary Results - TODO
+
+## Concerns
+
+Our greatest concern is our lack of knowledge with C++ visualization technologies.
+We plan to do some research into the different options available, but we may also simply generate a trace for our algorithm and then visualize this with Python.
+
+We are also somewhat concerned that our tests may not be comprehensive enough to describe the problem space.
+We are currently resolving this by generating many types of random graphs.
+If we discover that some forms of parallelism are much better for certain types of graphs than others, we may hand engineer some test cases to demonstrate this.
+
+## Updated Schedule
