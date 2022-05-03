@@ -13,10 +13,13 @@ using std::unordered_map;
 #include <unordered_set>
 using std::unordered_set;
 #include <iostream>
+#include <chrono>
 #include <omp.h>
 
+#ifndef GRAPH
+#define GRAPH
 #include "lib/graph.cpp"
-
+#endif
 
 typedef float cost_t;
 typedef unordered_map<int, unordered_set<cost_t>> set1_t;
@@ -26,6 +29,13 @@ typedef unordered_map<int, zdict_t> kdict_t;
 typedef tuple<int, cost_t, int, int, int> partition_info_t;
 
 vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
+    using namespace std::chrono;
+    typedef std::chrono::high_resolution_clock Clock;
+    typedef std::chrono::duration<double> dsec;
+
+    auto compute_start = Clock::now();
+    double compute_time = 0;
+
     // first vector: vertex index v
     // second vector: child index i for that vertex
     // first map: parts index k ->
@@ -119,6 +129,12 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
         processed.insert(v);
     }
 
+    compute_time += duration_cast<dsec>(Clock::now() - compute_start).count();
+    printf("computation time: %lf.\n", compute_time);
+
+    auto backtrack_start = Clock::now();
+    double backtrack_time = 0;
+
     vector<int> assignment(tree.size(), -1);
     bool exists = false;
     zdict_t final_zd = dp_table[root].back().second[parts];
@@ -184,20 +200,8 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
         }
     }
 
-    return assignment;
-}
+    backtrack_time += duration_cast<dsec>(Clock::now() - backtrack_start).count();
+    printf("backtracking time: %lf.\n", backtrack_time);
 
-int main() {
-    omp_set_num_threads(2);
-    vector<float> weights = {0.0, 1.0, 2.0, 3.0};
-    vector<int> n0 = {1, 2};
-    vector<int> n1 = {};
-    vector<int> n2 = {3};
-    vector<int> n3 = {};
-    vector <vector<int>> adj = {n0, n1, n2, n3};
-    Tree<float> tree(adj, weights, 0);
-    vector<int> partition = naive_partition(tree, 3, 0.1, 3.1);
-    for (int p: partition)
-        std::cout << p << std::endl;
-    return 0;
+    return assignment;
 }

@@ -10,6 +10,7 @@ using std::set;
 #include <stack>
 using std::stack;
 #include <numeric>
+#include "omp.h"
 
 #ifndef GRAPH
 #define GRAPH
@@ -18,7 +19,7 @@ using std::stack;
 
 #include "sample_graphs.cpp"
 #include "spanning_tree.cpp"
-#include "sequential.cpp"
+#include "parallelism_within_levels.cpp"
 
 
 int test_graph() {
@@ -70,6 +71,15 @@ int check_partition(Graph<float> G, vector<int> assignment, int parts, cost_t lo
     rev_assignment_t rev_assign;
     for (int v = 0; v < assignment.size(); v++) {
         int part_num = assignment[v];
+        if (part_num == -1) {
+            printf("no assignment for vertex %d\n", v);
+//            printf("vertex %d cost: %f\n", v, G.weight(v));
+//            printf("vertex %d neighbors: ", v);
+//            for (auto vn: G.neighbors(v)) {
+//                printf("%d ", vn);
+//            }
+//            printf("\n");
+        }
         rev_assign[part_num].insert(v);
     }
 
@@ -201,6 +211,7 @@ int test_sequential_random() {
 }
 
 int main() {
+    omp_set_num_threads(4);
 //    printf("testing graph\n");
 //    test_graph();
 //    printf("testing spanning tree\n");

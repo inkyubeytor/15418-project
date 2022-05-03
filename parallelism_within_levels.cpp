@@ -13,10 +13,13 @@ using std::unordered_map;
 #include <unordered_set>
 using std::unordered_set;
 #include <iostream>
+#include <chrono>
 #include "omp.h"
 
+#ifndef GRAPH
+#define GRAPH
 #include "lib/graph.cpp"
-
+#endif
 
 typedef float cost_t;
 typedef unordered_map<int, unordered_set<cost_t>> set1_t;
@@ -26,6 +29,13 @@ typedef unordered_map<int, zdict_t> kdict_t;
 typedef tuple<int, cost_t, int, int, int> partition_info_t;
 
 vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
+    using namespace std::chrono;
+    typedef std::chrono::high_resolution_clock Clock;
+    typedef std::chrono::duration<double> dsec;
+
+    auto compute_start = Clock::now();
+    double compute_time = 0;
+
     // first vector: vertex index v
     // second vector: child index i for that vertex
     // first map: parts index k ->
@@ -44,11 +54,15 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
     unordered_set<int> processed;
     vector<vector<int>> postorder = tree.dfs_postorder_levels();
     int root = postorder.back().back();
+    int level_rank = 0;
     for (vector<int> postorder_level : postorder) {
         int num_in_level = postorder_level.size();
+//        printf("level rank: %d, num in level: %d\n", level_rank, num_in_level);
 #pragma omp parallel for
         for (int level_index = 0; level_index < num_in_level; level_index++) {
             int v = postorder_level[level_index];
+//            printf("thread ID: %d, level_index: %d, v: %d\n",
+//                   omp_get_thread_num(), level_index, v);
             // create children set
             const vector<int> &neighbors = tree.neighbors(v);
             vector<int> children;
@@ -64,6 +78,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
             };
 
             // add parts_0 to dp_table[v]
+#pragma omp critical
             dp_table[v].push_back(make_pair(-1, parts_0));
 
             for (int child: children) {
@@ -122,12 +137,20 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
                     parts_i[k] = z_dict;
                 }
                 // add parts_i to dp_table[v][child] (correct for off by one idx?)
+#pragma omp critical
                 dp_table[v].push_back(make_pair(child, parts_i));
             }
 #pragma omp critical
             processed.insert(v);
         }
+        level_rank++;
     }
+
+    compute_time += duration_cast<dsec>(Clock::now() - compute_start).count();
+    printf("computation time: %lf.\n", compute_time);
+
+    auto backtrack_start = Clock::now();
+    double backtrack_time = 0;
 
     vector<int> assignment(tree.size(), -1);
     bool exists = false;
@@ -160,7 +183,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
             continue;
         }
 
-        if (z == -1) {  // start new partition
+        if (z == -1.0) {  // start new partition
             zdict_t zd = dp_table[v][i].second[k];
             for (auto it = zd.begin(); it != zd.end(); ++it) {
                 cost_t z1 = it->first;
@@ -182,32 +205,36 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
         if (!s2.empty()) {
             int kp = *s2.begin();
             int new_part_num = ++max_part_num;
+            if (assignment[vp] != -1) {
+                printf("vertex %d already assigned?\n", vp);
+            }
             assignment[vp] = new_part_num;
             input_queue.push(make_tuple(v, z, kp, i - 1, v_part_num));
-            input_queue.push(make_tuple(vp, -1, k - kp, dp_table[vp].size() - 1, new_part_num));
+            input_queue.push(make_tuple(vp, -1.0, k - kp, static_cast<int>(dp_table[vp].size()) - 1, new_part_num));
+//            if (v == 426 || vp == 426) {
+//                printf("v = %d, vp = %d\n", v, vp);
+//                printf("pushed %d %f %d %d %d \n", v, z, kp, i - 1, v_part_num);
+//                printf("pushed %d %f %d %d %d \n", vp, -1.0, k - kp, static_cast<int>(dp_table[vp].size()) - 1, new_part_num);
+//            }
         } else {
             int kp = s1.begin()->first;
             cost_t zp = *s1.begin()->second.begin();
+            if (assignment[vp] != -1) {
+                printf("vertex %d already assigned?\n", vp);
+            }
             assignment[vp] = v_part_num;
             input_queue.push(make_tuple(v, zp, kp, i - 1, v_part_num));
-            input_queue.push(make_tuple(vp, z - zp, k - kp + 1, dp_table[vp].size() - 1, v_part_num));
+            input_queue.push(make_tuple(vp, z - zp, k - kp + 1, static_cast<int>(dp_table[vp].size()) - 1, v_part_num));
+//            if (v == 426 || vp == 426) {
+//                printf("v = %d, vp = %d\n", v, vp);
+//                printf("pushed %d %f %d %d %d \n", v, zp, kp, i - 1, v_part_num);
+//                printf("pushed %d %f %d %d %d \n", vp, z - zp, k - kp + 1, static_cast<int>(dp_table[vp].size()) - 1, v_part_num);
+//            }
         }
     }
 
-    return assignment;
-}
+    backtrack_time += duration_cast<dsec>(Clock::now() - backtrack_start).count();
+    printf("backtracking time: %lf.\n", backtrack_time);
 
-int main() {
-    omp_set_num_threads(2);
-    vector<float> weights = {0.0, 1.0, 2.0, 3.0};
-    vector<int> n0 = {1, 2};
-    vector<int> n1 = {};
-    vector<int> n2 = {3};
-    vector<int> n3 = {};
-    vector <vector<int>> adj = {n0, n1, n2, n3};
-    Tree<float> tree(adj, weights, 0);
-    vector<int> partition = naive_partition(tree, 3, 0.9, 3.1);
-    for (int p: partition)
-        std::cout << p << std::endl;
-    return 0;
+    return assignment;
 }
