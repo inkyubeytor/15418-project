@@ -64,7 +64,7 @@ bool check_connectivity(Graph<float> G, set<int> nodes) {
 
 int check_partition(Graph<float> G, vector<int> assignment, int parts, cost_t lower, cost_t upper) {
     if (*assignment.begin() == -1) {
-        printf("failed: no assignment\n");
+        printf("failed: no assignment\n\n");
         return -1;
     }
 
@@ -89,7 +89,7 @@ int check_partition(Graph<float> G, vector<int> assignment, int parts, cost_t lo
         int part_num = it->first;
         set<int> nodes = it->second;
         if (!check_connectivity(G, nodes)) {
-            printf("failed*: part %d not connected\n", part_num);
+            printf("failed*: part %d not connected\n\n", part_num);
             return 1;
         }
         cost_t z = 0;
@@ -97,7 +97,7 @@ int check_partition(Graph<float> G, vector<int> assignment, int parts, cost_t lo
             z += G.weight(*node_it);
         }
         if (!(lower <= z && z <= upper)) {
-            printf("failed*: part %d not in cost bound\n", part_num);
+            printf("failed*: part %d not in cost bound\n\n", part_num);
             return 1;
         }
     }
