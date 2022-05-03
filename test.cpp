@@ -45,7 +45,7 @@ bool check_connectivity(Graph<float> G, set<int> nodes) {
     stack<int> frontier;
     frontier.push(root);
     visited[root] = true;
-    int num_visited = 1;
+    size_t num_visited = 1;
 
     while (!frontier.empty()) {
         int node = frontier.top();
@@ -69,10 +69,10 @@ int check_partition(Graph<float> G, vector<int> assignment, int parts, cost_t lo
     }
 
     rev_assignment_t rev_assign;
-    for (int v = 0; v < assignment.size(); v++) {
+    for (size_t v = 0; v < assignment.size(); v++) {
         int part_num = assignment[v];
         if (part_num == -1) {
-            printf("no assignment for vertex %d\n", v);
+            printf("no assignment for vertex %lu\n", v);
 //            printf("vertex %d cost: %f\n", v, G.weight(v));
 //            printf("vertex %d neighbors: ", v);
 //            for (auto vn: G.neighbors(v)) {
