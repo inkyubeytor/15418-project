@@ -102,6 +102,7 @@ int check_partition(Graph<float> G, vector<int> assignment, int parts, cost_t lo
         }
     }
     printf("success\n");
+    printf("\n");
     return 0;
 }
 
