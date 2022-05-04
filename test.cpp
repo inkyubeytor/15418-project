@@ -19,8 +19,9 @@ using std::stack;
 
 #include "sample_graphs.cpp"
 #include "spanning_tree.cpp"
-#include "parallelism_within_levels.cpp"
-
+//#include "sequential.cpp"
+//#include "parallelism_within_levels.cpp"
+#include "omp_within_child.cpp"
 
 int test_graph() {
     Tree<float> T = get_T0();
@@ -234,8 +235,34 @@ int test_nontree() {
     return 0;
 }
 
+int bench_tree() {
+    Graph<float> Glarge1 = get_Glarge1();
+    Tree<float> Tlarge1 = bfs_st(Glarge1, 0);
+    printf("test large 1.1 (FAIL):\n");
+    test_partition(Glarge1, Tlarge1, 10, 900.0, 1100.0);
+    printf("test large 1.2 (PASS):\n");
+    test_partition(Glarge1, Tlarge1, 20, 400.0, 600.0);
+
+    Graph<float> Glarge2 = get_Glarge2();
+    Tree<float> Tlarge2 = bfs_st(Glarge2, 0);
+    printf("test large 2.1 (PASS):\n");
+    test_partition(Glarge2, Tlarge2, 20, 400.0, 600.0);
+
+    Graph<float> Glarge3 = get_Glarge3();
+    Tree<float> Tlarge3 = bfs_st(Glarge3, 0);
+    printf("test large 3.1 (PASS):\n");
+    test_partition(Glarge3, Tlarge3, 20, 300.0, 600.0);
+
+    Graph<float> Gladder1000 = get_Gladder1000();
+    Tree<float> Tladder1000 = bfs_st(Gladder1000, 0);
+    printf("test ladder 1000 (PASS):\n");
+    test_partition(Gladder1000, Tladder1000, 30, 200.0, 400.0);
+
+    return 0;
+}
+
 int main() {
-    omp_set_num_threads(4);
+    omp_set_num_threads(8);
 //    printf("testing graph\n");
 //    test_graph();
 //    printf("testing spanning tree\n");
@@ -244,7 +271,7 @@ int main() {
 //    test_rand_st();
     printf("testing sequential algo\n");
 //    test_sequential_simple();
-    test_sequential_random();
+    bench_tree();
 //    printf("testing non-tree graphs\n");
 //    test_nontree();
     return 0;
