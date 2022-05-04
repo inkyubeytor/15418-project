@@ -21,6 +21,9 @@ using std::unordered_set;
 #include "lib/graph.cpp"
 #endif
 
+#define PRINT_ASSIGNMENT
+
+
 typedef float cost_t;
 typedef unordered_map<int, unordered_set<cost_t>> set1_t;
 typedef unordered_set<int> set2_t;
@@ -28,7 +31,7 @@ typedef unordered_map<cost_t, pair<set1_t, set2_t>> zdict_t;
 typedef unordered_map<int, zdict_t> kdict_t;
 typedef tuple<int, cost_t, int, int, int> partition_info_t;
 
-vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper) {
+vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t upper, std::string assignment_filename) {
     using namespace std::chrono;
     typedef std::chrono::high_resolution_clock Clock;
     typedef std::chrono::duration<double> dsec;
@@ -167,6 +170,12 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
     }
 
     assignment[root] = 0;
+#ifdef PRINT_ASSIGNMENT
+    std::ofstream assignment_file;
+    assignment_file.open(assignment_filename, std::ios::app);
+//    printf("%d 0\n", root);
+    assignment_file << root << " 0\n";
+#endif
     int max_part_num = 0;
 
     queue<partition_info_t> input_queue;
@@ -209,6 +218,10 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
                 printf("vertex %d already assigned?\n", vp);
             }
             assignment[vp] = new_part_num;
+#ifdef PRINT_ASSIGNMENT
+//            printf("%d %d\n", vp, new_part_num);
+            assignment_file << vp << " " << new_part_num << "\n";
+#endif
             input_queue.push(make_tuple(v, z, kp, i - 1, v_part_num));
             input_queue.push(make_tuple(vp, -1.0, k - kp, static_cast<int>(dp_table[vp].size()) - 1, new_part_num));
 //            if (v == 426 || vp == 426) {
@@ -223,6 +236,10 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
                 printf("vertex %d already assigned?\n", vp);
             }
             assignment[vp] = v_part_num;
+#ifdef PRINT_ASSIGNMENT
+//            printf("%d %d\n", vp, v_part_num);
+            assignment_file << vp << " " << v_part_num << "\n";
+#endif
             input_queue.push(make_tuple(v, zp, kp, i - 1, v_part_num));
             input_queue.push(make_tuple(vp, z - zp, k - kp + 1, static_cast<int>(dp_table[vp].size()) - 1, v_part_num));
 //            if (v == 426 || vp == 426) {
@@ -232,6 +249,10 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
 //            }
         }
     }
+
+#ifdef PRINT_ASSIGNMENT
+    assignment_file.close();
+#endif
 
     backtrack_time += duration_cast<dsec>(Clock::now() - backtrack_start).count();
     printf("backtracking time: %lf.\n", backtrack_time);

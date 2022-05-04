@@ -107,8 +107,8 @@ int check_partition(Graph<float> G, vector<int> assignment, int parts, cost_t lo
     return 0;
 }
 
-int test_partition(Graph<cost_t> G, Tree<cost_t> T, int parts, cost_t lower, cost_t upper) {
-    return check_partition(G, naive_partition(T, parts, lower, upper), parts, lower, upper);
+int test_partition(Graph<cost_t> G, Tree<cost_t> T, int parts, cost_t lower, cost_t upper, std::string filename) {
+    return check_partition(G, naive_partition(T, parts, lower, upper, filename), parts, lower, upper);
 }
 
 int test_sequential_simple() {
@@ -118,36 +118,36 @@ int test_sequential_simple() {
     Graph<float> G0 = get_G0();
     Tree<float> T0 = get_T0();
     printf("test 0.1 (PASS):\n");
-    test_partition(G0, T0, 3, 0.9, 3.1);
+    test_partition(G0, T0, 3, 0.9, 3.1, "assignments/G0-1_simple.txt");
 
     Graph<float> G1 = get_G1();
     Tree<float> T1 = get_T1();
     printf("test 1.1 (PASS):\n");
-    test_partition(G1, T1, 3, 4.0, 6.0);
+    test_partition(G1, T1, 3, 4.0, 6.0, "assignments/G1-1_simple.txt");
     printf("test 1.2 (PASS):\n");
-    test_partition(G1, T1, 2, 5.0, 10.0);
+    test_partition(G1, T1, 2, 5.0, 10.0, "assignments/G1-2_simple.txt");
     printf("test 1.3 (FAIL):\n");
-    test_partition(G1, T1, 1, 4.0, 6.0);
+    test_partition(G1, T1, 1, 4.0, 6.0, "assignments/G1-3_simple.txt");
     printf("test 1.4 (FAIL):\n");
-    test_partition(G1, T1, 4, 2.0, 3.0);
+    test_partition(G1, T1, 4, 2.0, 3.0, "assignments/G1-4_simple.txt");
     printf("test 1.5 (FAIL):\n");
-    test_partition(G1, T1, 5, 2.0, 3.0);
+    test_partition(G1, T1, 5, 2.0, 3.0, "assignments/G1-5_simple.txt");
 
     Graph<float> G2 = get_G2();
     Tree<float> T2 = get_T2();
     printf("test 2.1 (PASS):\n");
-    test_partition(G2, T2, 15, 1.0, 2.0);
+    test_partition(G2, T2, 15, 1.0, 2.0, "assignments/G2-1_simple.txt");
     printf("test 2.2 (PASS):\n");
-    test_partition(G2, T2, 5, 3.0, 3.0);
+    test_partition(G2, T2, 5, 3.0, 3.0, "assignments/G2-2_simple.txt");
     printf("test 2.3 (FAIL):\n");
-    test_partition(G2, T2, 4, 2.0, 3.0);
+    test_partition(G2, T2, 4, 2.0, 3.0, "assignments/G2-3_simple.txt");
 
     Graph<float> G3 = get_G3();
     Tree<float> T3 = get_T3();
     printf("test 3.1 (PASS):\n");
-    test_partition(G3, T3, 3, 5.5, 8.5);
+    test_partition(G3, T3, 3, 5.5, 8.5, "assignments/G3-1_simple.txt");
     printf("test 3.2 (FAIL):\n");
-    test_partition(G3, T3, 7, 0.5, 5.5);
+    test_partition(G3, T3, 7, 0.5, 5.5, "assignments/G3-2_simple.txt");
     return 0;
 }
 
@@ -155,29 +155,29 @@ int test_rand_st() {
     Graph<float> G0 = get_G0();
     Tree<float> T0 = rand_st(G0);
     printf("test 0.1 (PASS):\n");
-    test_partition(G0, T0, 3, 0.9, 3.1);
+    test_partition(G0, T0, 3, 0.9, 3.1, "assignments/G0-1_rand.txt");
 
     Graph<float> G1 = get_G1();
     Tree<float> T1 = rand_st(G1);
     printf("test 1.1 (PASS):\n");
-    test_partition(G1, T1, 3, 4.0, 6.0);
+    test_partition(G1, T1, 3, 4.0, 6.0, "assignments/G1-1_rand.txt");
     printf("test 1.2 (PASS):\n");
-    test_partition(G1, T1, 2, 5.0, 10.0);
+    test_partition(G1, T1, 2, 5.0, 10.0, "assignments/G1-2_rand.txt");
     printf("test 1.3 (FAIL):\n");
-    test_partition(G1, T1, 1, 4.0, 6.0);
+    test_partition(G1, T1, 1, 4.0, 6.0, "assignments/G1-3_rand.txt");
     printf("test 1.4 (FAIL):\n");
-    test_partition(G1, T1, 4, 2.0, 3.0);
+    test_partition(G1, T1, 4, 2.0, 3.0, "assignments/G1-4_rand.txt");
     printf("test 1.5 (FAIL):\n");
-    test_partition(G1, T1, 5, 2.0, 3.0);
+    test_partition(G1, T1, 5, 2.0, 3.0, "assignments/G1-5_rand.txt");
 
     Graph<float> G2 = get_G2();
     Tree<float> T2 = rand_st(G2);
     printf("test 2.1 (PASS):\n");
-    test_partition(G2, T2, 15, 1.0, 2.0);
+    test_partition(G2, T2, 15, 1.0, 2.0, "assignments/G2-1_rand.txt");
     printf("test 2.2 (PASS):\n");
-    test_partition(G2, T2, 5, 3.0, 3.0);
+    test_partition(G2, T2, 5, 3.0, 3.0, "assignments/G2-2_rand.txt");
     printf("test 2.3 (FAIL):\n");
-    test_partition(G2, T2, 4, 2.0, 3.0);
+    test_partition(G2, T2, 4, 2.0, 3.0, "assignments/G2-3_rand.txt");
     return 0;
 }
 
@@ -185,30 +185,30 @@ int test_sequential_random() {
     printf("-----\n");
     printf("random graphs\n");
 
-    Graph<float> Gsmall1 = get_Gsmall1();
-    Tree<float> Tsmall1 = bfs_st(Gsmall1, 0);
-    printf("test small 1.1 (FAIL):\n");
-    test_partition(Gsmall1, Tsmall1, 5, 12.0, 20.0);
-    printf("test small 1.2 (PASS):\n");
-    test_partition(Gsmall1, Tsmall1, 5, 10.0, 22.0);
-    printf("test small 1.3 (FAIL):\n");
-    test_partition(Gsmall1, Tsmall1, 4, 15.0, 25.0);
-    printf("test small 1.4 (PASS):\n");
-    test_partition(Gsmall1, Tsmall1, 4, 10.0, 30.0);
-    printf("test small 1.5 (PASS):\n");
-    test_partition(Gsmall1, Tsmall1, 2, 35.0, 45.0);
+//    Graph<float> Gsmall1 = get_Gsmall1();
+//    Tree<float> Tsmall1 = bfs_st(Gsmall1, 0);
+//    printf("test small 1.1 (FAIL):\n");
+//    test_partition(Gsmall1, Tsmall1, 5, 12.0, 20.0);
+//    printf("test small 1.2 (PASS):\n");
+//    test_partition(Gsmall1, Tsmall1, 5, 10.0, 22.0);
+//    printf("test small 1.3 (FAIL):\n");
+//    test_partition(Gsmall1, Tsmall1, 4, 15.0, 25.0);
+//    printf("test small 1.4 (PASS):\n");
+//    test_partition(Gsmall1, Tsmall1, 4, 10.0, 30.0);
+//    printf("test small 1.5 (PASS):\n");
+//    test_partition(Gsmall1, Tsmall1, 2, 35.0, 45.0);
 
     Graph<float> Gmed1 = get_Gmed1();
     Tree<float> Tmed1 = bfs_st(Gmed1, 0);
     printf("test med 1.1 (PASS):\n");
-    test_partition(Gmed1, Tmed1, 10, 75.0, 125.0);
+    test_partition(Gmed1, Tmed1, 10, 75.0, 125.0, "assignments/med1-1.txt");
 
     Graph<float> Glarge1 = get_Glarge1();
     Tree<float> Tlarge1 = bfs_st(Glarge1, 0);
-    printf("test large 1.1 (FAIL):\n");
-    test_partition(Glarge1, Tlarge1, 10, 900.0, 1100.0);
+//    printf("test large 1.1 (FAIL):\n");
+//    test_partition(Glarge1, Tlarge1, 10, 900.0, 1100.0);
     printf("test large 1.2 (PASS):\n");
-    test_partition(Glarge1, Tlarge1, 20, 400.0, 600.0);
+    test_partition(Glarge1, Tlarge1, 20, 400.0, 600.0, "assignments/large1-2.txt");
     return 0;
 }
 
@@ -226,7 +226,7 @@ int test_nontree() {
     Graph<float> Gladder = get_Gladder500();
     Tree<float> Tladder = rand_st(Gladder);
     printf("test ladder 500:\n");
-    test_partition(Gladder, Tladder, 250, 16.0, 18.0);
+    test_partition(Gladder, Tladder, 250, 16.0, 18.0, "assignments/ladder500_rand.txt");
 
 //    Graph<float> Gladder = get_Gladder1000();
 //    Tree<float> Tladder = rand_st(Gladder);
@@ -239,24 +239,24 @@ int bench_tree() {
     Graph<float> Glarge1 = get_Glarge1();
     Tree<float> Tlarge1 = bfs_st(Glarge1, 0);
     printf("test large 1.1 (FAIL):\n");
-    test_partition(Glarge1, Tlarge1, 10, 900.0, 1100.0);
+    test_partition(Glarge1, Tlarge1, 10, 900.0, 1100.0, "assignments/large1-1.txt");
     printf("test large 1.2 (PASS):\n");
-    test_partition(Glarge1, Tlarge1, 20, 400.0, 600.0);
+    test_partition(Glarge1, Tlarge1, 20, 400.0, 600.0, "assignments/large1-2.txt");
 
     Graph<float> Glarge2 = get_Glarge2();
     Tree<float> Tlarge2 = bfs_st(Glarge2, 0);
     printf("test large 2.1 (PASS):\n");
-    test_partition(Glarge2, Tlarge2, 20, 400.0, 600.0);
+    test_partition(Glarge2, Tlarge2, 20, 400.0, 600.0, "assignments/large2-1.txt");
 
     Graph<float> Glarge3 = get_Glarge3();
     Tree<float> Tlarge3 = bfs_st(Glarge3, 0);
     printf("test large 3.1 (PASS):\n");
-    test_partition(Glarge3, Tlarge3, 20, 300.0, 600.0);
+    test_partition(Glarge3, Tlarge3, 20, 300.0, 600.0, "assignments/large3-1.txt");
 
     Graph<float> Gladder1000 = get_Gladder1000();
     Tree<float> Tladder1000 = bfs_st(Gladder1000, 0);
     printf("test ladder 1000 (PASS):\n");
-    test_partition(Gladder1000, Tladder1000, 30, 200.0, 400.0);
+    test_partition(Gladder1000, Tladder1000, 30, 200.0, 400.0, "assignments/ladder1000.txt");
 
     return 0;
 }
@@ -271,7 +271,8 @@ int main() {
 //    test_rand_st();
     printf("testing sequential algo\n");
 //    test_sequential_simple();
-    bench_tree();
+    test_sequential_random();
+//    bench_tree();
 //    printf("testing non-tree graphs\n");
 //    test_nontree();
     return 0;
