@@ -7,6 +7,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <time.h>
 
 using std::queue;
 using std::vector;
@@ -111,6 +112,7 @@ Tree<float> min_st(Graph<float> input_graph, int root, float (*edge_weight)(int,
 
 // random spanning tree by setting random edge weights and root and finding minimum spanning tree
 Tree<float> rand_st(Graph<float> input_graph) {
+    srand(time(NULL));
     int root = std::rand() % input_graph.size();
     return min_st(input_graph, root, rand_edge_weight);
 }

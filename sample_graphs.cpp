@@ -192,3 +192,23 @@ Graph<float> get_Glarge1() {
     Graph<float> G = tree_from_file("test_cases/large1.txt");
     return G;
 }
+
+Graph<float> get_Gladder500() {
+    Graph<float> G = tree_from_file("test_cases/ladder500.txt");
+    return G;
+}
+
+Graph<float> get_Gladder1000() {
+    Graph<float> G = tree_from_file("test_cases/ladder1000.txt");
+    return G;
+}
+
+Graph<float> get_Gconnectedsmall() {
+    Graph<float> G = tree_from_file("test_cases/connected_small.txt");
+    return G;
+}
+
+Graph<float> get_Gconnectedmed() {
+    Graph<float> G = tree_from_file("test_cases/connected_med.txt");
+    return G;
+}

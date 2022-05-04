@@ -211,6 +211,29 @@ int test_sequential_random() {
     return 0;
 }
 
+int test_nontree() {
+//    Graph<float> Gsmall = get_Gconnectedsmall();
+//    Tree<float> Tsmall = rand_st(Gsmall);
+//    printf("test fully connected small:\n");
+//    test_partition(Gsmall, Tsmall, 2, 19.5, 21.5);
+
+//    Graph<float> Gmed = get_Gconnectedmed();
+//    Tree<float> Tmed = rand_st(Gmed);
+//    printf("test fully connected med:\n");
+//    test_partition(Gmed, Tmed, 12, 719.5, 720.5);
+
+    Graph<float> Gladder = get_Gladder500();
+    Tree<float> Tladder = rand_st(Gladder);
+    printf("test ladder 500:\n");
+    test_partition(Gladder, Tladder, 250, 16.0, 18.0);
+
+//    Graph<float> Gladder = get_Gladder1000();
+//    Tree<float> Tladder = rand_st(Gladder);
+//    printf("test ladder 1000:\n");
+//    test_partition(Gladder, Tladder, 500, 16.0, 18.0);
+    return 0;
+}
+
 int main() {
     omp_set_num_threads(4);
 //    printf("testing graph\n");
@@ -222,5 +245,7 @@ int main() {
     printf("testing sequential algo\n");
 //    test_sequential_simple();
     test_sequential_random();
+//    printf("testing non-tree graphs\n");
+//    test_nontree();
     return 0;
 };
