@@ -13,6 +13,7 @@ using std::unordered_map;
 #include <unordered_set>
 using std::unordered_set;
 #include <iostream>
+#include <fstream>
 #include <chrono>
 #include <omp.h>
 
