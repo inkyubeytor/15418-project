@@ -1,4 +1,6 @@
-Writeup: https://youtu.be/rzPji8xBVvw
+Video (fixed audio): https://youtu.be/FzntcGdG2Aw
+
+Video: https://youtu.be/rzPji8xBVvw
 
 # Parallel Cost-Bounded Graph Partitioning
 Team Members: Abhishek Vijayakumar (abhishev@andrew.cmu.edu), Anna Cai (annacai@andrew.cmu.edu)
