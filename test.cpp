@@ -10,6 +10,8 @@ using std::set;
 #include <stack>
 using std::stack;
 #include <numeric>
+#include <cstdlib>
+#include <time.h>
 #include "omp.h"
 
 #ifndef GRAPH
@@ -17,12 +19,21 @@ using std::stack;
 #include "lib/graph.cpp"
 #endif
 
-#include "sample_graphs.cpp"
+#ifndef PARTITION
+#define PARTITION
 #include "spanning_tree.cpp"
 //#include "sequential.cpp"
 //#include "parallelism_within_levels.cpp"
 #include "parallelism_within_levels_2.cpp"
 //#include "omp_within_child.cpp"
+#include "omp_within_child.cpp"
+#endif
+
+//#include "multiple_trees.cpp"
+#include "multiple_trees_parallel.cpp"
+
+#include "sample_graphs.cpp"
+
 
 int test_graph() {
     Tree<float> T = get_T0();
@@ -110,6 +121,10 @@ int check_partition(Graph<float> G, vector<int> assignment, int parts, cost_t lo
 
 int test_partition(Graph<cost_t> G, Tree<cost_t> T, int parts, cost_t lower, cost_t upper, std::string filename) {
     return check_partition(G, naive_partition(T, parts, lower, upper, filename), parts, lower, upper);
+}
+
+int test_partition_multiple(Graph<cost_t> G, int max_iter, int parts, cost_t lower, cost_t upper, std::string filename) {
+    return check_partition(G, naive_partition_graph(G, max_iter, parts, lower, upper, filename), parts, lower, upper);
 }
 
 int test_sequential_simple() {
@@ -227,7 +242,8 @@ int test_nontree() {
     Graph<float> Gladder = get_Gladder500();
     Tree<float> Tladder = rand_st(Gladder);
     printf("test ladder 500:\n");
-    test_partition(Gladder, Tladder, 250, 16.0, 18.0, "assignments/ladder500_rand.txt");
+    test_partition(Gladder, Tladder, 50, 77.0, 93.0, "assignments/ladder500_rand.txt");
+//    test_partition(Gladder, Tladder, 250, 16.0, 18.0, "assignments/ladder500_rand.txt");
 
 //    Graph<float> Gladder = get_Gladder1000();
 //    Tree<float> Tladder = rand_st(Gladder);
@@ -236,34 +252,55 @@ int test_nontree() {
     return 0;
 }
 
+int test_multiple_trees() {
+//    Graph<float> Gsmall = get_Gconnectedsmall();
+//    printf("test fully connected small:\n");
+//    test_partition_multiple(Gsmall, 8, 2, 19.5, 21.5, "assignments/connected_small_rand.txt");
+
+//    Graph<float> Gmed = get_Gconnectedmed();
+//    printf("test fully connected med:\n");
+//    test_partition_multiple(Gmed, 40, 12, 400, 800, "assignments/connected_med_rand.txt");
+
+    Graph<float> Gladder = get_Gladder500();
+    printf("test ladder 500:\n");
+    test_partition_multiple(Gladder, 40, 50, 77.0, 93.0, "assignments/ladder500_rand.txt");
+    return 0;
+}
+
 int bench_tree() {
-    Graph<float> Glarge1 = get_Glarge1();
-    Tree<float> Tlarge1 = bfs_st(Glarge1, 0);
-    printf("test large 1.1 (FAIL):\n");
-    test_partition(Glarge1, Tlarge1, 10, 900.0, 1100.0, "assignments/large1-1.txt");
-    printf("test large 1.2 (PASS):\n");
-    test_partition(Glarge1, Tlarge1, 20, 400.0, 600.0, "assignments/large1-2.txt");
+//    Graph<float> Glarge1 = get_Glarge1();
+//    Tree<float> Tlarge1 = bfs_st(Glarge1, 0);
+//    printf("test large 1.1 (FAIL):\n");
+//    test_partition(Glarge1, Tlarge1, 10, 900.0, 1100.0, "assignments/large1-1.txt");
+//    printf("test large 1.2 (PASS):\n");
+//    test_partition(Glarge1, Tlarge1, 20, 400.0, 600.0, "assignments/large1-2.txt");
+//
+//    Graph<float> Glarge2 = get_Glarge2();
+//    Tree<float> Tlarge2 = bfs_st(Glarge2, 0);
+//    printf("test large 2.1 (PASS):\n");
+//    test_partition(Glarge2, Tlarge2, 20, 400.0, 600.0, "assignments/large2-1.txt");
+//
+//    Graph<float> Glarge3 = get_Glarge3();
+//    Tree<float> Tlarge3 = bfs_st(Glarge3, 0);
+//    printf("test large 3.1 (PASS):\n");
+//    test_partition(Glarge3, Tlarge3, 20, 300.0, 600.0, "assignments/large3-1.txt");
+//
+//    Graph<float> Gladder1000 = get_Gladder1000();
+//    Tree<float> Tladder1000 = bfs_st(Gladder1000, 0);
+//    printf("test ladder 1000 (PASS):\n");
+//    test_partition(Gladder1000, Tladder1000, 30, 200.0, 400.0, "assignments/ladder1000.txt");
 
-    Graph<float> Glarge2 = get_Glarge2();
-    Tree<float> Tlarge2 = bfs_st(Glarge2, 0);
-    printf("test large 2.1 (PASS):\n");
-    test_partition(Glarge2, Tlarge2, 20, 400.0, 600.0, "assignments/large2-1.txt");
-
-    Graph<float> Glarge3 = get_Glarge3();
-    Tree<float> Tlarge3 = bfs_st(Glarge3, 0);
-    printf("test large 3.1 (PASS):\n");
-    test_partition(Glarge3, Tlarge3, 20, 300.0, 600.0, "assignments/large3-1.txt");
-
-    Graph<float> Gladder1000 = get_Gladder1000();
-    Tree<float> Tladder1000 = bfs_st(Gladder1000, 0);
-    printf("test ladder 1000 (PASS):\n");
-    test_partition(Gladder1000, Tladder1000, 30, 200.0, 400.0, "assignments/ladder1000.txt");
+    Graph<float> Gstar = get_Gstar();
+    Tree<float> Tstar = bfs_st(Gstar, 0);
+    printf("test star (PASS):\n");
+    test_partition(Gstar, Tstar, 20, 200.0, 400.0, "assignments/star.txt");
 
     return 0;
 }
 
 int main() {
     omp_set_num_threads(8);
+    srand(time(NULL));
 //    printf("testing graph\n");
 //    test_graph();
 //    printf("testing spanning tree\n");
@@ -276,5 +313,6 @@ int main() {
     bench_tree();
 //    printf("testing non-tree graphs\n");
 //    test_nontree();
+//    test_multiple_trees();
     return 0;
 };

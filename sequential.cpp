@@ -13,6 +13,7 @@ using std::unordered_map;
 #include <unordered_set>
 using std::unordered_set;
 #include <iostream>
+#include <fstream>
 #include <chrono>
 
 #ifndef GRAPH
@@ -20,7 +21,7 @@ using std::unordered_set;
 #include "lib/graph.cpp"
 #endif
 
-#define PRINT_ASSIGNMENT
+//#define PRINT_ASSIGNMENT
 
 
 typedef float cost_t;
@@ -151,7 +152,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
     assignment[root] = 0;
 #ifdef PRINT_ASSIGNMENT
     std::ofstream assignment_file;
-    assignment_file.open(assignment_filename, std::ios::app);
+    assignment_file.open(assignment_filename, std::ios::trunc);
 //    printf("%d 0\n", root);
     assignment_file << root << " 0\n";
 #endif

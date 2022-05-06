@@ -227,3 +227,8 @@ Graph<float> get_Gconnectedmed() {
     Graph<float> G = tree_from_file("test_cases/connected_med.txt");
     return G;
 }
+
+Graph<float> get_Gstar() {
+    Graph<float> G = tree_from_file("test_cases/star_random.txt");
+    return G;
+}

@@ -21,7 +21,7 @@ using std::unordered_set;
 #include "lib/graph.cpp"
 #endif
 
-#define PRINT_ASSIGNMENT
+//#define PRINT_ASSIGNMENT
 
 
 typedef float cost_t;
@@ -60,7 +60,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
     int level_rank = 0;
     for (vector<int> postorder_level : postorder) {
         int num_in_level = postorder_level.size();
-//        printf("level rank: %d, num in level: %d\n", level_rank, num_in_level);
+        printf("level rank: %d, num in level: %d\n", level_rank, num_in_level);
 #pragma omp parallel for
         for (int level_index = 0; level_index < num_in_level; level_index++) {
             int v = postorder_level[level_index];
@@ -172,7 +172,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
     assignment[root] = 0;
 #ifdef PRINT_ASSIGNMENT
     std::ofstream assignment_file;
-    assignment_file.open(assignment_filename, std::ios::app);
+    assignment_file.open(assignment_filename, std::ios::app | std::ios::trunc);
 //    printf("%d 0\n", root);
     assignment_file << root << " 0\n";
 #endif
