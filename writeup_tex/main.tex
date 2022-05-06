@@ -340,6 +340,7 @@ We notice that within-child parallelism is very effective.
 The $p$ fixed amounts of work per level are efficiently parallelized over with low amounts of threads.
 There is some degree of falloff in efficiency once threads are assigned fewer and fewer pieces of work per thread.
 This is also in part due to the asymmetry in number of pieces of work per thread: when some threads have only 3 pieces of work and some 2, the difference in runtime per thread can cause a long period of idleness for some threads.
+As this is our best performing version, we provide speedup graphs for all tested problems in Figure \ref{fig:within_child_speedup}.
 
 We also notice that nesting parallelism in the computations of S1 and S2 is not effective.
 This is likely due to the extreme amount of contention for the lock needed to update the shared hash map.
@@ -349,6 +350,7 @@ Finally, we notice that reordering the graph does not significantly change perfo
 This is likely because in the vast majority of cases, we are working with relatively low-degree trees.
 As such, the entire graph data structure is small (e.g. 16 KB or less for weights and adjacency lists) and large amounts of it can be loaded into the cache and reused in later iterations of the algorithm.
 Thus, locality does not provide a significant benefit because we are already not evicting data before we can reuse it later.
+
 
 \begin{table}[]
     \centering
@@ -379,6 +381,13 @@ Within Child, Reorder (8 threads) & 1.636 & 1.086 & 4.333 & 4.025 & 4.913 \\ \hl
     \label{tab:ghc-time}
 \end{table}
 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=6in]{project/fig/within_child_speedups.png}
+    \caption{Speedups for Within Child Parallelism}
+    \label{fig:within_child_speedup}
+\end{figure}
 
 \begin{figure}
     \centering
