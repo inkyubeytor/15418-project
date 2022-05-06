@@ -152,7 +152,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
     assignment[root] = 0;
 #ifdef PRINT_ASSIGNMENT
     std::ofstream assignment_file;
-    assignment_file.open(assignment_filename, std::ios::app | std::ios::trunc);
+    assignment_file.open(assignment_filename, std::ios::trunc);
 //    printf("%d 0\n", root);
     assignment_file << root << " 0\n";
 #endif
@@ -219,7 +219,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
 #endif
 
     backtrack_time += duration_cast<dsec>(Clock::now() - backtrack_start).count();
-//    printf("backtracking time: %lf.\n", backtrack_time);
+    printf("backtracking time: %lf.\n", backtrack_time);
 
     return assignment;
 }
