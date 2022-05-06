@@ -66,4 +66,28 @@ public:
         reverse(traversal.begin(), traversal.end());
         return traversal;
     }
+
+    Tree<T> dfs_reorder() {
+        int n = this->size();
+
+        // if you index new to old with a new index it gives you the old index
+        vector<int> new_to_old = this->dfs_postorder_nodes();
+        vector<int> old_to_new(n, -1);
+        for (int i = 0; i < n; i++)
+            old_to_new[new_to_old[i]] = i;
+
+        vector<T> new_weights;
+        for (int i = 0; i < n; i++)
+            new_weights.push_back(this->weight(new_to_old[i]));
+
+        vector<vector<int>> new_adj_list;
+        for (int i = 0; i < n; i++) {
+            vector<int> v;
+            for (int neighbor: this->neighbors(new_to_old[i]))
+                v.push_back(old_to_new[neighbor]);
+            new_adj_list.push_back(v);
+        }
+
+        return Tree(new_adj_list, new_weights, old_to_new[root]);
+    }
 };
