@@ -2,6 +2,7 @@
 #include <vector>
 using std::vector;
 #include <numeric>
+#include <chrono>
 #include "omp.h"
 
 #ifndef GRAPH
@@ -18,6 +19,13 @@ using std::vector;
 #endif
 
 vector<int> naive_partition_graph(Graph<float> graph, int max_iter, int parts, cost_t lower, cost_t upper, std::string assignment_filename) {
+    using namespace std::chrono;
+    typedef std::chrono::high_resolution_clock Clock;
+    typedef std::chrono::duration<double> dsec;
+
+    auto total_start = Clock::now();
+    double total_time = 0;
+
     vector<int> assignment = {-1};
     bool found = false;
 #pragma omp parallel for
@@ -33,5 +41,8 @@ vector<int> naive_partition_graph(Graph<float> graph, int max_iter, int parts, c
             }
         }
     }
+    total_time += duration_cast<dsec>(Clock::now() - total_start).count();
+    printf("total time: %lf.\n", total_time);
+
     return assignment;
 }

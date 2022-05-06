@@ -22,7 +22,7 @@ using std::unordered_set;
 #include "lib/graph.cpp"
 #endif
 
-#define PRINT_ASSIGNMENT
+//#define PRINT_ASSIGNMENT
 
 
 typedef float cost_t;
@@ -134,7 +134,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
     }
 
     compute_time += duration_cast<dsec>(Clock::now() - compute_start).count();
-    printf("computation time: %lf.\n", compute_time);
+//    printf("computation time: %lf.\n", compute_time);
 
     auto backtrack_start = Clock::now();
     double backtrack_time = 0;
@@ -156,7 +156,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
     assignment[root] = 0;
 #ifdef PRINT_ASSIGNMENT
     std::ofstream assignment_file;
-    assignment_file.open(assignment_filename, std::ios::app);
+    assignment_file.open(assignment_filename, std::ios::app | std::ios::trunc);
 //    printf("%d 0\n", root);
     assignment_file << root << " 0\n";
 #endif
@@ -223,7 +223,7 @@ vector<int> naive_partition(Tree<cost_t> tree, int parts, cost_t lower, cost_t u
 #endif
 
     backtrack_time += duration_cast<dsec>(Clock::now() - backtrack_start).count();
-    printf("backtracking time: %lf.\n", backtrack_time);
+//    printf("backtracking time: %lf.\n", backtrack_time);
 
     return assignment;
 }

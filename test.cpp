@@ -22,11 +22,12 @@ using std::stack;
 #ifndef PARTITION
 #define PARTITION
 #include "spanning_tree.cpp"
-#include "sequential.cpp"
-//#include "parallelism_within_levels.cpp"
+//#include "sequential.cpp"
+#include "parallelism_within_levels.cpp"
 //#include "omp_within_child.cpp"
 #endif
 
+//#include "multiple_trees.cpp"
 #include "multiple_trees_parallel.cpp"
 
 #include "sample_graphs.cpp"
@@ -254,9 +255,13 @@ int test_multiple_trees() {
 //    printf("test fully connected small:\n");
 //    test_partition_multiple(Gsmall, 8, 2, 19.5, 21.5, "assignments/connected_small_rand.txt");
 
-    Graph<float> Gmed = get_Gconnectedmed();
-    printf("test fully connected med:\n");
-    test_partition_multiple(Gmed, 40, 12, 400, 800, "assignments/connected_med_rand.txt");
+//    Graph<float> Gmed = get_Gconnectedmed();
+//    printf("test fully connected med:\n");
+//    test_partition_multiple(Gmed, 40, 12, 400, 800, "assignments/connected_med_rand.txt");
+
+    Graph<float> Gladder = get_Gladder500();
+    printf("test ladder 500:\n");
+    test_partition_multiple(Gladder, 40, 50, 77.0, 93.0, "assignments/ladder500_rand.txt");
     return 0;
 }
 
@@ -295,12 +300,12 @@ int main() {
 //    test_spanning_tree();
 //    printf("testing random spanning tree\n");
 //    test_rand_st();
-//    printf("testing sequential algo\n");
+    printf("testing sequential algo\n");
 //    test_sequential_simple();
 //    test_sequential_random();
-//    bench_tree();
-    printf("testing non-tree graphs\n");
+    bench_tree();
+//    printf("testing non-tree graphs\n");
 //    test_nontree();
-    test_multiple_trees();
+//    test_multiple_trees();
     return 0;
 };
