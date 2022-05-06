@@ -21,7 +21,8 @@ using std::stack;
 #include "spanning_tree.cpp"
 //#include "sequential.cpp"
 //#include "parallelism_within_levels.cpp"
-#include "omp_within_child.cpp"
+#include "parallelism_within_levels_2.cpp"
+//#include "omp_within_child.cpp"
 
 int test_graph() {
     Tree<float> T = get_T0();
@@ -271,8 +272,8 @@ int main() {
 //    test_rand_st();
     printf("testing sequential algo\n");
 //    test_sequential_simple();
-    test_sequential_random();
-//    bench_tree();
+//    test_sequential_random();
+    bench_tree();
 //    printf("testing non-tree graphs\n");
 //    test_nontree();
     return 0;
